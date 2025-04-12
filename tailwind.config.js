@@ -1,0 +1,40 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    content: [
+        "./App.{js,jsx,ts,tsx}",
+        "./Router.{js,jsx,ts,tsx}",
+        "./pages/**/*.{js,jsx,ts,tsx}",
+        "./components/**/*.{js,jsx,ts,tsx}",
+        "./partials/**/*.{js,jsx,ts,tsx}",
+    ],
+    presets: [require("nativewind/preset")],
+    theme: {
+        extend: {
+            colors: {
+                primary: "rgb(var(--color-primary) / <alpha-value>)",
+                background: "rgb(var(--color-background) / <alpha-value>)",
+                text: "rgb(var(--color-text) / <alpha-value>)",
+                border: "rgb(var(--color-border) / <alpha-value>)",
+            },
+        },
+    },
+    plugins: [
+        ({ addBase }) =>
+            addBase({
+                ":root": {
+                    "--color-primary": "97 95 255",
+                    "--color-background": "255 255 255",
+                    "--color-text": "0 0 0",
+                    "--color-border": "209 213 220",
+                },
+                "@media (prefers-color-scheme: dark)": {
+                    ":root": {
+                        "--color-primary": "124 134 255",
+                        "--color-background": "0 0 0",
+                        "--color-text": "255 255 255",
+                        "--color-border": "54 65 83",
+                    },
+                },
+            }),
+    ],
+};
