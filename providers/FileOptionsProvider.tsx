@@ -18,6 +18,12 @@ interface Folder {
     name: string;
 }
 
+interface Option {
+    icon: keyof typeof Feather.glyphMap;
+    label: string;
+    onPress: () => void;
+}
+
 export default function FileOptionsProvider(props: PropsWithChildren) {
     const theme = useTheme();
     const [folder, setFolder] = useState<Folder | null>(null);
@@ -28,15 +34,46 @@ export default function FileOptionsProvider(props: PropsWithChildren) {
         optionsSheetRef.current?.expand();
     };
 
-    const renderBackdrop = (props: BottomSheetBackdropProps) => {
-        return (
-            <BottomSheetBackdrop
-                appearsOnIndex={0}
-                disappearsOnIndex={-1}
-                {...props}
-            />
-        );
-    };
+    const renderBackdrop = (props: BottomSheetBackdropProps) => (
+        <BottomSheetBackdrop
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            {...props}
+        />
+    );
+
+    const folderOptions: Option[] = [
+        {
+            icon: "trash-2",
+            label: "Move to trash",
+            onPress: () =>
+                console.log(`Moving folder "${folder?.name}" to trash`),
+        },
+        {
+            icon: "edit",
+            label: "Rename folder",
+            onPress: () => console.log(`Renaming folder "${folder?.name}"`),
+        },
+        {
+            icon: "share-2",
+            label: "Share folder",
+            onPress: () => console.log(`Sharing folder "${folder?.name}"`),
+        },
+    ];
+
+    const renderOption = ({ icon, label, onPress }: Option, index: number) => (
+        <RectButton
+            key={index}
+            onPress={onPress}
+            style={{ paddingHorizontal: 16, paddingVertical: 12 }}
+        >
+            <View className="flex flex-row items-center gap-2">
+                <Feather name={icon} size={20} color={theme.colors.text} />
+                <Text>{label}</Text>
+            </View>
+        </RectButton>
+    );
+
     return (
         <FileOptionsContext.Provider value={{ openFolderOptions }}>
             {props.children}
@@ -49,29 +86,17 @@ export default function FileOptionsProvider(props: PropsWithChildren) {
                 handleIndicatorStyle={{ backgroundColor: theme.colors.text }}
             >
                 <BottomSheetView>
-                    <View className="flex flex-row p-4">
-                        <Text>
-                            <Feather name="folder" size={58} />
+                    <View className="flex flex-row items-center p-4">
+                        <Feather
+                            name="folder"
+                            size={58}
+                            color={theme.colors.text}
+                        />
+                        <Text className="ml-4 text-lg font-bold">
+                            {folder?.name || "Folder Options"}
                         </Text>
                     </View>
-                    <RectButton>
-                        <View className="flex flex-row gap-2 px-4 py-2">
-                            <Feather name="trash-2" size={20} />
-                            <Text>Move to trash</Text>
-                        </View>
-                    </RectButton>
-                    <RectButton>
-                        <View className="flex flex-row gap-2 px-4 py-2">
-                            <Feather name="trash-2" size={20} />
-                            <Text>Move to trash</Text>
-                        </View>
-                    </RectButton>
-                    <RectButton>
-                        <View className="flex flex-row gap-2 px-4 py-2">
-                            <Feather name="trash-2" size={20} />
-                            <Text>Move to trash</Text>
-                        </View>
-                    </RectButton>
+                    {folderOptions.map(renderOption)}
                 </BottomSheetView>
             </BottomSheet>
         </FileOptionsContext.Provider>
