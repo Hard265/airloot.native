@@ -13,7 +13,7 @@ export const Text = (props: TextProps) => {
 
 export const Heading = (props: TextProps) => {
     return (
-        <TextDefault className="color-text p-4 text-4xl" {...props}>
+        <TextDefault className="p-4 text-4xl color-text" {...props}>
             {props.children}
         </TextDefault>
     );
@@ -21,7 +21,7 @@ export const Heading = (props: TextProps) => {
 
 export const Title = (props: TextProps) => {
     return (
-        <TextDefault className="color-text text-2xl font-medium" {...props}>
+        <TextDefault className="text-2xl font-medium color-text" {...props}>
             {props.children}
         </TextDefault>
     );

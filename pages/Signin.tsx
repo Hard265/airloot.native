@@ -22,7 +22,7 @@ export default function Signin() {
             <View className="items-start p-4">
                 <Button onPress={onSign}>Sign In</Button>
             </View>
-            <View className="flex-col gap-2 p-4">
+            <View className="flex flex-col gap-4 p-4">
                 <Link to="SignIn">Sign in with SSO</Link>
                 <Text>
                     Need an account? <Link to="Register">Sign up</Link>

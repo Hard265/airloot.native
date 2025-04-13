@@ -23,7 +23,7 @@ export default function Register() {
                 </View>
                 <View className="flex-1">
                     <Input
-                        label="Password"
+                        label="Confirm Password"
                         value={password2}
                         onChange={setPassword2}
                     />

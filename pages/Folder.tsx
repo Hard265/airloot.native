@@ -1,3 +1,9 @@
+import { StackScreenProps } from "@react-navigation/stack";
+import clsx from "clsx";
+import { includes, isEmpty, size, xor } from "lodash";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import Animated, {
     Extrapolation,
     interpolate,
@@ -6,13 +12,10 @@ import Animated, {
     useSharedValue,
 } from "react-native-reanimated";
 import { Heading, Text } from "../components/Text";
-import { StackScreenProps } from "@react-navigation/stack";
-import type { RootStackParamsList } from "../Router";
-import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
-import { isEmpty, xor, includes, size } from "lodash";
-import clsx from "clsx";
+import type { HomeStackParamsList } from "../Router";
+import { ListItem } from "../components/ListItem";
+import { Center } from "../components/Layout";
+import useFileOptions from "../hooks/useFileOptions";
 
 const data = [
     {
@@ -32,9 +35,10 @@ const data = [
     },
 ];
 
-type props = StackScreenProps<RootStackParamsList, "Folder">;
+type props = StackScreenProps<HomeStackParamsList, "Folder">;
 
 export default function Folder({ route, navigation }: props) {
+    const { openFolderOptions } = useFileOptions();
     const titleOffset = useSharedValue(32);
     const name = "lib";
 
@@ -49,13 +53,15 @@ export default function Folder({ route, navigation }: props) {
             headerLeft: isEmpty(selected)
                 ? undefined
                 : (props) => (
-                      <Text className="p-4 text-2xl">{size(selected)}</Text>
+                      <Text className="p-4 text-2xl color-text">
+                          {size(selected)}
+                      </Text>
                   ),
             headerTitle() {
                 return (
                     <View className="overflow-hidden">
                         <Animated.Text
-                            className="color-text translate-y-8 text-2xl"
+                            className="translate-y-8 text-2xl color-text"
                             style={[titleStyle]}
                         >
                             {name}
@@ -77,44 +83,31 @@ export default function Folder({ route, navigation }: props) {
         },
     });
 
-    const longPressHandler = (id: typeof route.params.id) => {
-        setSelected((prev) => xor(prev, [id]));
-    };
-
-    const pressHandler = (id: typeof route.params.id) => {
-        if (isEmpty(selected)) console.log();
-        else setSelected((prev) => xor(prev, [id]));
-    };
-
     return (
         <Animated.FlatList
             className="bg-background"
             onScroll={scrollHandler}
             data={data}
             ListHeaderComponent={
-                <View className="items-center">
-                    <Heading>{name}</Heading>
-                    <View className="flex-row justify-between px-4 py-2">
-                        <Text>Name</Text>
-                    </View>
-                </View>
+                <>
+                    <Center>
+                        <Heading>{name}</Heading>
+                    </Center>
+                    {
+                        <View className="flex-row justify-between px-4 py-2">
+                            <Text className="text-xl">Name</Text>
+                        </View>
+                    }
+                </>
             }
             renderItem={({ item }) => (
-                <RectButton
-                    onLongPress={() => longPressHandler(item.id)}
-                    onPress={() => pressHandler(item.id)}
-                >
-                    <View
-                        accessible
-                        accessibilityRole="button"
-                        className={clsx(
-                            "flex-row gap-2 p-4",
-                            includes(selected, item.id) && "bg-primary/5",
-                        )}
-                    >
-                        <Text className="text-xl">{item.name}</Text>
-                    </View>
-                </RectButton>
+                <ListItem
+                    title={item.name}
+                    marking={!isEmpty(selected)}
+                    selected={includes(selected, item.id)}
+                    onSelect={() => setSelected((prev) => xor(prev, [item.id]))}
+                    onPress={() => openFolderOptions({ name: item.name })}
+                />
             )}
             keyExtractor={({ id }) => id}
         />

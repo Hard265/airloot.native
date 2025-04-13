@@ -11,61 +11,63 @@ import useSession from "./hooks/useSession";
 import Home from "./pages/Home";
 import Folder from "./pages/Folder";
 import Reset from "./pages/Reset";
-import { View } from "react-native";
-import Button from "./components/Button";
-import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
-import UploadButton from "./partials/UploadButton";
+import colors from "tailwindcss/colors";
+import HomeLayout from "./layouts/HomeLayout";
 
 export type RootStackParamsList = {
-    Home: undefined;
-    Folder: {
-        id: string;
-    };
+    Index: undefined;
     SignIn: undefined;
     Register: undefined;
     Reset: undefined;
 };
 
+export type HomeStackParamsList = {
+    Home: undefined;
+    Folder: {
+        id: string;
+    };
+};
+
 const RootStack = createStackNavigator<RootStackParamsList>();
+const HomeStack = createStackNavigator<HomeStackParamsList>();
+
+function HomeRouter() {
+    return (
+        <HomeStack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+                headerShadowVisible: false,
+                title: "",
+                animation: "slide_from_right",
+            }}
+            layout={(props) => <HomeLayout {...props} />}
+        >
+            <HomeStack.Screen name="Home" component={Home} />
+            <HomeStack.Screen name="Folder" component={Folder} />
+        </HomeStack.Navigator>
+    );
+}
 
 export default function Router() {
     const colorScheme = useColorScheme();
     const session = useSession();
 
-    const theme =
-        colorScheme === "dark"
-            ? { ...DarkTheme, colors: { ...DarkTheme.colors, card: "#000" } }
-            : { ...DefaultTheme };
+    const theme = getTheme(colorScheme);
 
     return (
         <NavigationContainer theme={theme}>
             <RootStack.Navigator>
                 {session.isAuthenticated ? (
-                    <RootStack.Group
-                        screenOptions={{ headerShadowVisible: false }}
-                        // screenLayout={(props) => {
-                        //     return (
-                        //         <>
-                        //             {props.children}
-                        //             <UploadButton />
-                        //         </>
-                        //     );
-                        // }}
-                    >
-                        <RootStack.Screen name="Home" component={Home} />
-                        <RootStack.Screen
-                            name="Folder"
-                            options={{
-                                headerShadowVisible: false,
-                                animation: "slide_from_left",
-                            }}
-                            component={Folder}
-                        />
-                    </RootStack.Group>
+                    <RootStack.Screen
+                        name="Index"
+                        options={{ headerShown: false }}
+                        component={HomeRouter}
+                    />
                 ) : (
                     <RootStack.Group
                         screenOptions={{
                             title: "",
+                            animation: "slide_from_right",
                             headerShadowVisible: false,
                         }}
                     >
@@ -80,4 +82,22 @@ export default function Router() {
             </RootStack.Navigator>
         </NavigationContainer>
     );
+}
+function getTheme(colorScheme: string | null | undefined) {
+    return colorScheme === "dark"
+        ? {
+              ...DarkTheme,
+              colors: {
+                  ...DarkTheme.colors,
+                  card: colors.black,
+                  notification: colors.zinc[800],
+              },
+          }
+        : {
+              ...DefaultTheme,
+              colors: {
+                  ...DefaultTheme.colors,
+                  notification: colors.white,
+              },
+          };
 }
