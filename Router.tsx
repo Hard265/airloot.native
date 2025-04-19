@@ -13,6 +13,8 @@ import Folder from "./pages/Folder";
 import Reset from "./pages/Reset";
 import colors from "tailwindcss/colors";
 import HomeLayout from "./layouts/HomeLayout";
+import Root from "./pages/Root";
+import User from "./pages/User";
 
 export type RootStackParamsList = {
     Index: undefined;
@@ -23,9 +25,13 @@ export type RootStackParamsList = {
 
 export type HomeStackParamsList = {
     Home: undefined;
+    User: {
+        id?: string;
+    };
     Folder: {
         id: string;
     };
+    Root: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamsList>();
@@ -43,6 +49,16 @@ function HomeRouter() {
             layout={(props) => <HomeLayout {...props} />}
         >
             <HomeStack.Screen name="Home" component={Home} />
+            <HomeStack.Screen
+                name="User"
+                component={User}
+                options={{
+                    presentation: "transparentModal",
+                    animation: "fade",
+                    headerShown: false,
+                }}
+            />
+            <HomeStack.Screen name="Root" component={Root} />
             <HomeStack.Screen name="Folder" component={Folder} />
         </HomeStack.Navigator>
     );
@@ -56,7 +72,11 @@ export default function Router() {
 
     return (
         <NavigationContainer theme={theme}>
-            <RootStack.Navigator>
+            <RootStack.Navigator
+                screenOptions={{
+                    animation: "slide_from_right",
+                }}
+            >
                 {session.isAuthenticated ? (
                     <RootStack.Screen
                         name="Index"
@@ -67,7 +87,7 @@ export default function Router() {
                     <RootStack.Group
                         screenOptions={{
                             title: "",
-                            animation: "slide_from_right",
+
                             headerShadowVisible: false,
                         }}
                     >

@@ -12,6 +12,7 @@ module.exports = {
         extend: {
             colors: {
                 primary: "rgb(var(--color-primary) / <alpha-value>)",
+                secondary: "rgb(var(--color-secondary) / <alpha-value>)",
                 background: "rgb(var(--color-background) / <alpha-value>)",
                 text: "rgb(var(--color-text) / <alpha-value>)",
                 border: "rgb(var(--color-border) / <alpha-value>)",
@@ -23,6 +24,7 @@ module.exports = {
             addBase({
                 ":root": {
                     "--color-primary": "97 95 255",
+                    "--color-secondary": "255 255 255",
                     "--color-background": "255 255 255",
                     "--color-text": "0 0 0",
                     "--color-border": "209 213 220",
@@ -30,9 +32,10 @@ module.exports = {
                 "@media (prefers-color-scheme: dark)": {
                     ":root": {
                         "--color-primary": "124 134 255",
+                        "--color-secondary": "39 39 42",
                         "--color-background": "0 0 0",
                         "--color-text": "255 255 255",
-                        "--color-border": "54 65 83",
+                        "--color-border": "59 59 62",
                     },
                 },
             }),

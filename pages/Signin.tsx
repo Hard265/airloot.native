@@ -7,20 +7,41 @@ import useSession from "../hooks/useSession";
 
 export default function Signin() {
     const { signIn } = useSession();
+    const [pending, setPending] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const onSign = () => {
-        signIn({ email, password });
+        setPending(true);
+        signIn({ email, password })
+            .then(() => {})
+            .catch((error) => {
+                console.error("Error signing in", error);
+            })
+            .finally(() => {
+                setPending(false);
+            });
     };
 
     return (
         <ScrollView>
             <Heading>Sign In</Heading>
-            <Input label="Email address" value={email} onChange={setEmail} />
-            <Input label="Password" value={password} onChange={setPassword} />
+            <Input
+                label="Email address"
+                type="email-address"
+                value={email}
+                onChange={setEmail}
+            />
+            <Input
+                label="Password"
+                secureTextEntry
+                value={password}
+                onChange={setPassword}
+            />
             <View className="items-start p-4">
-                <Button onPress={onSign}>Sign In</Button>
+                <Button loading={pending} onPress={onSign}>
+                    Sign In
+                </Button>
             </View>
             <View className="flex flex-col gap-4 p-4">
                 <Link to="SignIn">Sign in with SSO</Link>

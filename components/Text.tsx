@@ -1,19 +1,23 @@
 import { PropsWithChildren } from "react";
-import { Text as TextDefault, TextProps } from "react-native";
+import { Text as T, TextProps } from "react-native";
 import { Link as RouterLink } from "@react-navigation/native";
 import { RootStackParamsList } from "../Router";
 
-export const Text = (props: TextProps) => {
+const TextDefault = (props: TextProps) => {
     return (
-        <TextDefault className="color-text" {...props}>
+        <T {...props} className={`font-normal text-text ${props.className}`}>
             {props.children}
-        </TextDefault>
+        </T>
     );
+};
+
+export const Text = (props: TextProps) => {
+    return <TextDefault {...props}>{props.children}</TextDefault>;
 };
 
 export const Heading = (props: TextProps) => {
     return (
-        <TextDefault className="p-4 text-4xl color-text" {...props}>
+        <TextDefault {...props} className={`p-4 ${props.className} text-4xl`}>
             {props.children}
         </TextDefault>
     );
@@ -21,7 +25,10 @@ export const Heading = (props: TextProps) => {
 
 export const Title = (props: TextProps) => {
     return (
-        <TextDefault className="text-2xl font-medium color-text" {...props}>
+        <TextDefault
+            {...props}
+            className={`text-2xl font-medium color-text ${props.className}`}
+        >
             {props.children}
         </TextDefault>
     );
@@ -37,9 +44,7 @@ interface LinkProps extends PropsWithChildren {
 export const Link = (props: LinkProps) => {
     return (
         <RouterLink screen={props.to} params={props.params || {}}>
-            <TextDefault className="color-primary">
-                {props.children}
-            </TextDefault>
+            <TextDefault className="text-primary">{props.children}</TextDefault>
         </RouterLink>
     );
 };

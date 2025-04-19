@@ -1,36 +1,73 @@
-import { createContext, PropsWithChildren, useState } from "react";
+import api, { deleteToken, getToken } from "@/services/api";
+import { runInAction } from "mobx";
+import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { setToken } from "../services/api";
 
 type sessionContextProps = {
-    token: {
-        access: string;
-        refresh: string;
-    } | null;
     signIn(credintials: { email: string; password: string }): Promise<void>;
+    signOut(): Promise<void>;
     isAuthenticated: boolean;
 };
 
 export const SessionContext = createContext<sessionContextProps>({
-    token: null,
     async signIn() {},
+    async signOut() {},
     isAuthenticated: false,
 });
 
 export default function SessionProvider(props: PropsWithChildren) {
-    const [token, setToken] = useState<sessionContextProps["token"]>(null);
+    const [loading, setLoading] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const signIn = async (credintials: { email: string; password: string }) => {
-        setToken({ access: "token", refresh: "token" });
+    useEffect(() => {
+        setLoading(true);
+        (async () => {
+            const token = await getToken();
+            runInAction(() => {
+                setIsAuthenticated(!!token);
+                setLoading(false);
+            });
+        })();
+    }, []);
+
+    const signIn = async ({
+        email,
+        password,
+    }: {
+        email: string;
+        password: string;
+    }) => {
+        try {
+            const { data } = await api.post("/token/", { email, password });
+            await setToken({ ...data });
+            setIsAuthenticated(true);
+        } catch (error) {
+            console.error("Error signing in:", error);
+            throw error;
+        }
+    };
+
+    const signOut = async () => {
+        await deleteToken();
+        setIsAuthenticated(false);
     };
 
     return (
         <SessionContext.Provider
             value={{
-                token,
                 signIn,
-                isAuthenticated: token ? true : false,
+                signOut,
+                isAuthenticated,
             }}
         >
-            {props.children}
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+            ) : (
+                props.children
+            )}
         </SessionContext.Provider>
     );
 }
