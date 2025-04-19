@@ -1,4 +1,3 @@
-import { IconButton } from "@/components/Button";
 import useSession from "@/hooks/useSession";
 import { HomeStackParamsList } from "@/Router";
 import userStore from "@/stores/userStore";
@@ -9,7 +8,7 @@ import * as Crypto from "expo-crypto";
 import { memoize } from "lodash";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
@@ -62,7 +61,10 @@ function User({ navigation }: navigationProp) {
                 <View className="max-h-4/5 flex w-11/12 flex-col bg-secondary p-2">
                     <View className="flex flex-col gap-1 bg-background/25 p-4">
                         <View className="items-end justify-center">
-                            <RectButton borderless>
+                            <RectButton
+                                borderless
+                                onPress={() => navigation.navigate("Settings")}
+                            >
                                 <Feather
                                     name="settings"
                                     size={20}

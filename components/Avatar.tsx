@@ -1,7 +1,7 @@
-import { Image, View } from "react-native";
 import * as Crypto from "expo-crypto";
 import { memoize } from "lodash";
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
@@ -34,7 +34,7 @@ export default function Avatar({ email, onPress, size = 80 }: AvatarProps) {
     }, [email, size]);
     return (
         <RectButton onPress={onPress}>
-            <View className="ml-4 size-14">
+            <View className="ml-4 size-12">
                 {url && (
                     <Animated.Image
                         sharedTransitionTag="_avatar"

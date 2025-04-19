@@ -2,6 +2,7 @@ import api, { deleteToken, getToken, setToken } from "@/services/api";
 import { runInAction } from "mobx";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import colors from "tailwindcss/colors";
 
 type sessionContextProps = {
     signIn(credintials: { email: string; password: string }): Promise<void>;
@@ -61,8 +62,11 @@ export default function SessionProvider(props: PropsWithChildren) {
             }}
         >
             {loading ? (
-                <View style={{ flex: 1, justifyContent: "center" }}>
-                    <ActivityIndicator size="large" color="#0000ff" />
+                <View className="flex-1 items-center justify-center bg-background">
+                    <ActivityIndicator
+                        size="large"
+                        color={colors.indigo[500]}
+                    />
                 </View>
             ) : (
                 props.children
