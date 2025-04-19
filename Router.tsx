@@ -15,6 +15,7 @@ import colors from "tailwindcss/colors";
 import HomeLayout from "./layouts/HomeLayout";
 import Root from "./pages/Root";
 import User from "./pages/User";
+import Settings from "./pages/Settings";
 
 export type RootStackParamsList = {
     Index: undefined;
@@ -32,6 +33,7 @@ export type HomeStackParamsList = {
         id: string;
     };
     Root: undefined;
+    Settings: undefined;
 };
 
 const RootStack = createStackNavigator<RootStackParamsList>();
@@ -60,6 +62,7 @@ function HomeRouter() {
             />
             <HomeStack.Screen name="Root" component={Root} />
             <HomeStack.Screen name="Folder" component={Folder} />
+            <HomeStack.Screen name="Settings" component={Settings} />
         </HomeStack.Navigator>
     );
 }

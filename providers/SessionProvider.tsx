@@ -1,8 +1,7 @@
-import api, { deleteToken, getToken } from "@/services/api";
+import api, { deleteToken, getToken, setToken } from "@/services/api";
 import { runInAction } from "mobx";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { setToken } from "../services/api";
 
 type sessionContextProps = {
     signIn(credintials: { email: string; password: string }): Promise<void>;

@@ -98,7 +98,7 @@ export default function UploadOptions() {
                         bottomSheetRef.current?.expand();
                     }}
                 >
-                    <View className="elevation-sm flex size-16 items-center justify-center rounded-2xl bg-primary">
+                    <View className="elevation-sm flex size-16 items-center justify-center bg-primary">
                         <Feather name="plus" size={24} color={"#fff"} />
                     </View>
                 </RectButton>

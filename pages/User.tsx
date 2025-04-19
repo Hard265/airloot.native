@@ -10,6 +10,8 @@ import { memoize } from "lodash";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 type navigationProp = StackScreenProps<HomeStackParamsList, "User">;
 
@@ -32,10 +34,6 @@ function User({ navigation }: navigationProp) {
         uri: "",
     });
     const email = userStore.email || "";
-
-    useEffect(() => {
-        userStore.setup();
-    }, []);
 
     useEffect(() => {
         setAvatar((v) => ({ ...v, loading: true }));
@@ -61,29 +59,39 @@ function User({ navigation }: navigationProp) {
             }}
         >
             <View className="flex-1 items-center justify-center bg-black/50">
-                <View className="max-h-4/5 flex w-11/12 flex-col rounded-xl bg-secondary p-2">
-                    <View className="flex flex-row gap-4 rounded-xl bg-background/25 p-4">
-                        {avatar.uri && (
-                            <Image
-                                source={{ uri: avatar.uri }}
-                                className="size-24 rounded-full"
-                            />
-                        )}
-                        <View className="flex flex-1 flex-col gap-0.5">
-                            <Text className="text-2xl font-medium color-text">
-                                Personal
-                            </Text>
-                            <Text className="text-base color-text">
-                                {email}
-                            </Text>
-                            <Text className="text-base text-green-500 dark:text-green-600">
-                                <Feather name="refresh-cw" /> Sync is on
-                            </Text>
+                <View className="max-h-4/5 flex w-11/12 flex-col bg-secondary p-2">
+                    <View className="flex flex-col gap-1 bg-background/25 p-4">
+                        <View className="items-end justify-center">
+                            <RectButton borderless>
+                                <Feather
+                                    name="settings"
+                                    size={20}
+                                    color={theme.colors.text}
+                                />
+                            </RectButton>
                         </View>
-                        <View className="-mr-2 -mt-2 self-start">
-                            <IconButton>
-                                <Feather name="settings" size={20} />
-                            </IconButton>
+                        <View className="flex flex-row gap-4">
+                            {avatar.uri && (
+                                <Animated.Image
+                                    sharedTransitionTag="_avatar"
+                                    source={{ uri: avatar.uri }}
+                                    className="size-24"
+                                />
+                            )}
+                            <View className="flex flex-1 flex-col gap-0.5">
+                                <Text className="text-2xl font-medium color-text">
+                                    Personal
+                                </Text>
+                                <Text
+                                    numberOfLines={1}
+                                    className="text-base color-text"
+                                >
+                                    {email}
+                                </Text>
+                                <Text className="text-base text-green-500 dark:text-green-600">
+                                    <Feather name="refresh-cw" /> Sync is on
+                                </Text>
+                            </View>
                         </View>
                     </View>
                     <TouchableOpacity onPress={() => session.signOut()}>

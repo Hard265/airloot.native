@@ -3,6 +3,7 @@ import * as Crypto from "expo-crypto";
 import { memoize } from "lodash";
 import { useEffect, useState } from "react";
 import { RectButton } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
 const getHash = memoize(async (email: string) => {
     const normalizedEmail = email.trim().toLowerCase();
@@ -33,11 +34,12 @@ export default function Avatar({ email, onPress, size = 80 }: AvatarProps) {
     }, [email, size]);
     return (
         <RectButton onPress={onPress}>
-            <View className="ml-4 size-12 bg-primary">
+            <View className="ml-4 size-14">
                 {url && (
-                    <Image
+                    <Animated.Image
+                        sharedTransitionTag="_avatar"
                         source={{ uri: url }}
-                        className="h-full w-full rounded-full"
+                        className="h-full w-full"
                     />
                 )}
             </View>

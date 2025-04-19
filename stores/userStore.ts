@@ -20,7 +20,7 @@ class UserStore {
         });
         try {
             const { data = {} } = await api.get("/user/");
-            this.setUser(data.id, data.email);
+            runInAction(() => this.setUser(data.id, data.email));
         } catch (error) {
             console.log(error);
         } finally {
