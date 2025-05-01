@@ -5,7 +5,10 @@ import { RootStackParamsList } from "../Router";
 
 const TextDefault = (props: TextProps) => {
     return (
-        <T {...props} className={`font-normal text-text ${props.className}`}>
+        <T
+            {...props}
+            className={`font-[Roobert-Medium] text-text ${props.className}`}
+        >
             {props.children}
         </T>
     );
@@ -27,7 +30,7 @@ export const Title = (props: TextProps) => {
     return (
         <TextDefault
             {...props}
-            className={`text-2xl font-medium color-text ${props.className}`}
+            className={`font-medium text-2xl color-text ${props.className}`}
         >
             {props.children}
         </TextDefault>
@@ -44,7 +47,9 @@ interface LinkProps extends PropsWithChildren {
 export const Link = (props: LinkProps) => {
     return (
         <RouterLink screen={props.to} params={props.params || {}}>
-            <TextDefault className="text-primary">{props.children}</TextDefault>
+            <Text className="font-[NeueMontreal-Medium] text-primary">
+                {props.children}
+            </Text>
         </RouterLink>
     );
 };

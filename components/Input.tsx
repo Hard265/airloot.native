@@ -1,3 +1,6 @@
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import clsx from "clsx";
+import { isEmpty, upperFirst } from "lodash";
 import { Text, TextInput, TextInputProps, View } from "react-native";
 
 interface InputProps {
@@ -7,12 +10,19 @@ interface InputProps {
     autoFocus?: boolean;
     selectTextOnFocus?: boolean;
     secureTextEntry?: boolean;
+    errors?: string[];
     type?: TextInputProps["keyboardType"];
 }
 export default function Input(props: InputProps) {
     return (
         <View className="flex flex-col gap-2 p-4">
-            <Text className="text-lg color-text">{props.label}</Text>
+            <Text
+                className={clsx(
+                    "font-[NeueMontreal-Medium] text-lg color-text",
+                )}
+            >
+                {props.label}
+            </Text>
             <TextInput
                 value={props.value}
                 onChangeText={props.onChange}
@@ -20,8 +30,26 @@ export default function Input(props: InputProps) {
                 autoFocus={props.autoFocus}
                 secureTextEntry={props.secureTextEntry}
                 keyboardType={props.type}
-                className="border-2 border-border px-4 text-base color-text focus:border-2 focus:border-primary"
+                className={clsx(
+                    "border border-border px-4 font-[NeueMontreal-Regular] text-base color-text focus:border-2 focus:border-primary",
+                    !isEmpty(props.errors) &&
+                        "border-2 border-red-500 dark:border-red-400",
+                )}
             />
+            {!isEmpty(props.errors) &&
+                props.errors?.map((error, i) => (
+                    <View key={i} className="flex flex-row items-start gap-0.5">
+                        <Text className="text-red-500 dark:text-red-400">
+                            <MaterialCommunityIcons
+                                name="circle-medium"
+                                size={18}
+                            />
+                        </Text>
+                        <Text className="flex-1 font-[NeueMontreal-Regular] text-red-500 dark:text-red-400">
+                            {upperFirst(error)}
+                        </Text>
+                    </View>
+                ))}
         </View>
     );
 }

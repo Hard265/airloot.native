@@ -26,7 +26,9 @@ export function MenuItem({ onPress, icon, title, subtitle }: MenuItemProps) {
             <View className="flex flex-row items-center gap-4 p-4">
                 <Feather name={icon} size={20} color={theme.colors.text} />
                 <View className="flex flex-col">
-                    <Text className="text-base color-text">{title}</Text>
+                    <Text className="font-[NeueMontreal-Medium] text-base color-text">
+                        {title}
+                    </Text>
                     {subtitle && (
                         <Text className="text-sm color-text">{subtitle}</Text>
                     )}

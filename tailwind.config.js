@@ -17,6 +17,12 @@ module.exports = {
                 text: "rgb(var(--color-text) / <alpha-value>)",
                 border: "rgb(var(--color-border) / <alpha-value>)",
             },
+            fontFamily: {
+                medium: ["Montreal-Medium"],
+                bold: ["Montreal-Bold"],
+                regular: ["Montreal-Regular"],
+                light: ["Montreal-Light"],
+            },
         },
     },
     plugins: [

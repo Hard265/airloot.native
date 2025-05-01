@@ -5,22 +5,24 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useColorScheme } from "react-native";
-import Signin from "./pages/Signin";
-import Register from "./pages/Register";
+import colors from "tailwindcss/colors";
 import useSession from "./hooks/useSession";
 import Home from "./pages/Home";
-import Folder from "./pages/Folder";
+import Register from "./pages/Register";
 import Reset from "./pages/Reset";
-import colors from "tailwindcss/colors";
-import HomeLayout from "./layouts/HomeLayout";
-import Root from "./pages/Root";
-import User from "./pages/User";
+import ResetLinkSent from "./pages/ResetLinkSent";
 import Settings from "./pages/Settings";
+import Signin from "./pages/Signin";
+import FolderOptionsProvider from "./providers/FolderOptionsProvider";
+import Folder from "./pages/Folder";
+import HomeProvider from "./providers/HomeProvider";
+import FolderOptions from "./widgets/FolderOptions";
 
 export type RootStackParamsList = {
     Index: undefined;
     SignIn: undefined;
     Register: undefined;
+    ResetLinkSent: undefined;
     Reset: undefined;
 };
 
@@ -33,6 +35,11 @@ export type HomeStackParamsList = {
         id: string;
     };
     Root: undefined;
+    Search:
+        | undefined
+        | {
+              query: string;
+          };
     Settings: undefined;
 };
 
@@ -48,10 +55,24 @@ function HomeRouter() {
                 title: "",
                 animation: "slide_from_right",
             }}
-            layout={(props) => <HomeLayout {...props} />}
         >
-            <HomeStack.Screen name="Home" component={Home} />
             <HomeStack.Screen
+                name="Home"
+                component={Home}
+                // layout={(props) => (
+                //     <HomeProvider {...props}>{props.children}</HomeProvider>
+                // )}
+            />
+            <HomeStack.Group
+                screenLayout={(props) => (
+                    <FolderOptionsProvider {...props}>
+                        <FolderOptions>{props.children}</FolderOptions>
+                    </FolderOptionsProvider>
+                )}
+            >
+                <HomeStack.Screen name="Folder" component={Folder} />
+            </HomeStack.Group>
+            {/* <HomeStack.Screen
                 name="User"
                 component={User}
                 options={{
@@ -61,17 +82,17 @@ function HomeRouter() {
                 }}
             />
             <HomeStack.Screen name="Root" component={Root} />
-            <HomeStack.Screen name="Folder" component={Folder} />
+            <HomeStack.Screen name="Search" component={Search} /> */}
             <HomeStack.Screen name="Settings" component={Settings} />
         </HomeStack.Navigator>
     );
 }
 
-export default function Router() {
+function Router() {
     const colorScheme = useColorScheme();
-    const session = useSession();
-
     const theme = getTheme(colorScheme);
+
+    const { authenticated } = useSession();
 
     return (
         <NavigationContainer theme={theme}>
@@ -80,7 +101,7 @@ export default function Router() {
                     animation: "slide_from_right",
                 }}
             >
-                {session.isAuthenticated ? (
+                {authenticated ? (
                     <RootStack.Screen
                         name="Index"
                         options={{ headerShown: false }}
@@ -90,7 +111,6 @@ export default function Router() {
                     <RootStack.Group
                         screenOptions={{
                             title: "",
-
                             headerShadowVisible: false,
                         }}
                     >
@@ -99,6 +119,10 @@ export default function Router() {
                             name="Register"
                             component={Register}
                         />
+                        <RootStack.Screen
+                            name="ResetLinkSent"
+                            component={ResetLinkSent}
+                        />
                         <RootStack.Screen name="Reset" component={Reset} />
                     </RootStack.Group>
                 )}
@@ -106,12 +130,14 @@ export default function Router() {
         </NavigationContainer>
     );
 }
+
 function getTheme(colorScheme: string | null | undefined) {
     return colorScheme === "dark"
         ? {
               ...DarkTheme,
               colors: {
                   ...DarkTheme.colors,
+                  primary: colors.indigo[400],
                   card: colors.black,
                   notification: colors.zinc[800],
               },
@@ -120,7 +146,10 @@ function getTheme(colorScheme: string | null | undefined) {
               ...DefaultTheme,
               colors: {
                   ...DefaultTheme.colors,
+                  primary: colors.indigo[500],
                   notification: colors.white,
               },
           };
 }
+
+export default Router;

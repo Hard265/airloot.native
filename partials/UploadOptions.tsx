@@ -1,4 +1,3 @@
-import Input from "@/components/Input";
 import Feather from "@expo/vector-icons/Feather";
 import BottomSheet, {
     BottomSheetBackdrop,
@@ -9,17 +8,21 @@ import { useTheme } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BackHandler, Text as NativeText, View } from "react-native";
+import { BackHandler, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Animated, { ZoomInUp, ZoomOutDown } from "react-native-reanimated";
 import { Text } from "../components/Text";
+import UploadOptionsCreate from "./UploadOptionsCreate";
+
+enum modes {
+    "RENAMING",
+}
 
 export default function UploadOptions() {
     const theme = useTheme();
     const bottomSheetRef = useRef<BottomSheet>(null);
     const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-    const [isFolderCreationMode, setIsFolderCreationMode] = useState(false);
-    const [newFolderName, setNewFolderName] = useState("New Folder");
+    const [mode, setMode] = useState<modes | null>(null);
 
     const renderBottomSheetBackdrop = useCallback(
         (props: BottomSheetBackdropProps) => (
@@ -76,16 +79,6 @@ export default function UploadOptions() {
         }
     };
 
-    const handleFolderCreation = () => {
-        if (newFolderName.trim()) {
-            console.log("Create folder with name:", newFolderName);
-            setNewFolderName("");
-            setIsFolderCreationMode(false);
-        } else {
-            console.log("Folder name cannot be empty");
-        }
-    };
-
     return (
         <>
             <Animated.View
@@ -116,11 +109,9 @@ export default function UploadOptions() {
                 handleIndicatorStyle={{ backgroundColor: theme.colors.text }}
             >
                 <BottomSheetView className="">
-                    {!isFolderCreationMode && (
+                    {mode === null && (
                         <Animated.View className="flex flex-row justify-evenly p-4">
-                            <RectButton
-                                onPress={() => setIsFolderCreationMode(true)}
-                            >
+                            <RectButton onPress={() => setMode(modes.RENAMING)}>
                                 <View className="flex-col items-center justify-center gap-3 p-4">
                                     <Text>
                                         <Feather name="folder-plus" size={24} />
@@ -157,32 +148,10 @@ export default function UploadOptions() {
                             </RectButton>
                         </Animated.View>
                     )}
-                    {isFolderCreationMode && (
-                        <View>
-                            <Input
-                                label="Name"
-                                value={newFolderName}
-                                autoFocus
-                                selectTextOnFocus
-                                onChange={setNewFolderName}
-                            />
-                            <View className="flex flex-row items-center justify-end gap-8 p-6">
-                                <NativeText
-                                    className="text-lg font-medium text-primary"
-                                    onPress={() =>
-                                        setIsFolderCreationMode(false)
-                                    }
-                                >
-                                    Cancel
-                                </NativeText>
-                                <NativeText
-                                    className="text-lg font-medium text-primary"
-                                    onPress={handleFolderCreation}
-                                >
-                                    OK
-                                </NativeText>
-                            </View>
-                        </View>
+                    {mode === modes.RENAMING && (
+                        <UploadOptionsCreate
+                            onRequestClose={() => setMode(null)}
+                        />
                     )}
                 </BottomSheetView>
             </BottomSheet>

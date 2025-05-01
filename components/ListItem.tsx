@@ -60,7 +60,9 @@ export default function ListItem(props: listItemProps) {
                     color={theme.colors.text}
                 />
                 <View>
-                    <Text className="text-lg color-text">{props.title}</Text>
+                    <Text className="font-[NeueMontreal-Medium] text-lg color-text">
+                        {props.title}
+                    </Text>
                     {props.subtitle && (
                         <Text className="text-lg color-text">
                             {props.subtitle}

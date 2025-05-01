@@ -31,7 +31,7 @@ export default function Button(props: ButtonProps) {
                         color={theme.colors.text}
                     />
                 )}
-                <Text className="text-base font-medium color-text">
+                <Text className="font-[NeueMontreal-Medium] text-base color-text">
                     {props.children}
                 </Text>
             </View>
@@ -41,9 +41,45 @@ export default function Button(props: ButtonProps) {
 
 export function IconButton(props: ButtonProps) {
     return (
-        <RectButton onPress={props.onPress}>
-            <View className="flex items-center justify-center p-3">
+        <RectButton
+            onPress={props.onPress}
+            enabled={!props.disabled && !props.loading}
+        >
+            <View
+                className={clsx(
+                    "flex items-center justify-center p-3",
+                    (props.disabled || props.loading) && "opacity-50",
+                )}
+            >
                 <Text className="color-text">{props.children}</Text>
+            </View>
+        </RectButton>
+    );
+}
+
+export function TextButton(props: ButtonProps) {
+    const theme = useTheme();
+    return (
+        <RectButton
+            onPress={props.onPress}
+            enabled={!props.disabled && !props.loading}
+        >
+            <View
+                className={clsx(
+                    "flex flex-row items-center justify-center p-2",
+                    (props.disabled || props.loading) && "opacity-50",
+                )}
+            >
+                {props.loading && (
+                    <ActivityIndicator
+                        className="mr-2"
+                        size="small"
+                        color={theme.colors.text}
+                    />
+                )}
+                <Text className="font-[NeueMontreal-Medium] text-base color-primary">
+                    {props.children}
+                </Text>
             </View>
         </RectButton>
     );
