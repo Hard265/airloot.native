@@ -27,7 +27,8 @@ export class UiStore {
 
     dirOptionsContext: string | null = null;
     fileOptionsContext: string | null = null;
-    contextMenuRef: any;
+
+    renaming: string | null = null;
 
     constructor(rootStore: RootStore) {
         makeObservable(this, {
@@ -42,6 +43,8 @@ export class UiStore {
             fileOptionsContext: observable,
             currentDirContext: computed,
             currentFileContext: computed,
+            renaming: observable,
+            setRenameId: action,
             setDirOptionsContext: action,
             setFileOptionsContext: action,
             turnSelectionMode: action,
@@ -69,6 +72,10 @@ export class UiStore {
 
     clearSelection() {
         this.selectedIds.clear();
+    }
+
+    setRenameId(id: string | null) {
+        this.renaming = id;
     }
 
     get currentDirContext() {

@@ -16,6 +16,7 @@ import Reset from "./pages/Reset";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import Settings from "./pages/Settings";
 import Signin from "./pages/Signin";
+import User from "./pages/User";
 
 export type RootStackParamsList = {
     Index: undefined;
@@ -54,15 +55,17 @@ function HomeRouter() {
                 title: "",
                 animation: "slide_from_right",
             }}
-            layout={(props) => <HomeLayout {...props} />}
+            layout={(props) => (
+                <HomeLayout>
+                    <FolderLayout {...props} />
+                </HomeLayout>
+            )}
         >
-            <HomeStack.Group
-                screenLayout={(props) => <FolderLayout {...props} />}
-            >
+            <HomeStack.Group>
                 <HomeStack.Screen name="Home" component={Home} />
                 <HomeStack.Screen name="Folder" component={Folder} />
             </HomeStack.Group>
-            {/* <HomeStack.Screen
+            <HomeStack.Screen
                 name="User"
                 component={User}
                 options={{
@@ -71,7 +74,7 @@ function HomeRouter() {
                     headerShown: false,
                 }}
             />
-            <HomeStack.Screen name="Root" component={Root} />
+            {/*  <HomeStack.Screen name="Root" component={Root} />
             <HomeStack.Screen name="Search" component={Search} /> */}
             <HomeStack.Screen name="Settings" component={Settings} />
         </HomeStack.Navigator>

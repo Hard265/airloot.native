@@ -1,60 +1,52 @@
-import { useEffect, useState } from "react";
-import { BackHandler, Button, Modal, Text, View } from "react-native";
-import Input from "./Input";
+import { Modal, Pressable, Text, View } from "react-native";
 
 interface PromptProps {
-    text: string;
-    label: string;
-    onConfirm?(value: string): void;
-    onCancel?(): void;
-    isVisible: boolean;
-    onClose?(): void;
+    message: string;
+    visible: boolean;
+    cancelLabel?: string;
+    confirmLabel?: string;
+    onResponse: (response: boolean) => void;
 }
 
-export default function Prompt({
-    label,
-    text,
-    onCancel,
-    onConfirm,
-    isVisible,
-    onClose,
-}: PromptProps) {
-    const [input, setInput] = useState("");
+export default function Prompt(props: PromptProps) {
+    const cancelLabel = props.cancelLabel || "Cancel";
+    const confirmLabel = props.confirmLabel || "Confirm";
 
-    useEffect(() => {
-        const handleBackPress = () => {
-            if (isVisible) {
-                onClose?.();
-                return true;
-            }
-            return false;
-        };
-
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            handleBackPress,
-        );
-        return () => backHandler.remove();
-    }, [isVisible, onClose]);
     return (
         <Modal
             transparent
-            visible={isVisible}
-            onDismiss={onCancel}
+            visible={props.visible}
+            animationType="fade"
+            statusBarTranslucent
+            onDismiss={() => props.onResponse(false)}
+            onRequestClose={() => props.onResponse(false)}
             className="flex-1 items-center justify-center"
         >
-            <View className="flex-1 items-center justify-center bg-black/50">
-                <View className="w-80 rounded-lg bg-white p-4">
-                    <Text className="text-lg">{text}</Text>
-                    <Input label={label} value={input} onChange={setInput} />
-                    <View className="mt-4 flex-row justify-between">
-                        <Button title="Cancel" onPress={onClose} />
-                        <Button
-                            title="Confirm"
-                            onPress={() => {
-                                onConfirm?.(input);
-                            }}
-                        />
+            <View className="flex-1 items-center justify-center bg-black/50 p-4">
+                <View className="flex flex-col gap-4 bg-secondary p-4 pb-1 sm:max-w-80">
+                    <Text className="self-start font-[Roobert-SemiBold] text-xl text-text">
+                        Alert
+                    </Text>
+                    <Text className="font-[NeueMontreal-Regular] text-lg color-text">
+                        {props.message}
+                    </Text>
+                    <View className="flex-row items-center justify-end gap-4">
+                        <Pressable
+                            onPress={() => props.onResponse(false)}
+                            className="p-2"
+                        >
+                            <Text className="px-2 font-[NeueMontreal-Medium] text-lg text-primary">
+                                {cancelLabel}
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => props.onResponse(true)}
+                            className="p-2"
+                        >
+                            <Text className="px-2 font-[NeueMontreal-Medium] text-lg text-error">
+                                {confirmLabel}
+                            </Text>
+                        </Pressable>
                     </View>
                 </View>
             </View>

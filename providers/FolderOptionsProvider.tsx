@@ -1,3 +1,4 @@
+import Prompt from "@/components/Prompt";
 import { useBackHandler } from "@/hooks/useBackHandler";
 import rootStore from "@/stores/rootStore";
 import FolderOptionsActions from "@/widgets/FolderOptionsActions";
@@ -9,23 +10,30 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
 import {
+    createContext,
     PropsWithChildren,
     useCallback,
-    useEffect,
-    useState,
-    createContext,
     useRef,
+    useState,
 } from "react";
-import { BackHandler, View } from "react-native";
+import { View } from "react-native";
 
 export const FolderOptionsContext = createContext<{
-    openOptionsContext(id: string): void;
+    openOptionsContext(id: string, type: "file" | "folder"): void;
     closeOptionsContext(): void;
+    showPrompt(options: {
+        message: string;
+        cancelLabel?: string;
+        confirmLabel?: string;
+    }): Promise<boolean>;
 }>({
     openOptionsContext: function (id: string): void {
         throw new Error("Function not implemented.");
     },
     closeOptionsContext: function (): void {
+        throw new Error("Function not implemented.");
+    },
+    showPrompt: function (): Promise<boolean> {
         throw new Error("Function not implemented.");
     },
 });
@@ -36,6 +44,39 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+
+    const [modalData, setModalData] = useState<{
+        message: string;
+        cancelLabel?: string;
+        confirmLabel?: string;
+    } | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [resolveModal, setResolveModal] = useState<
+        ((value: boolean) => void) | null
+    >(null);
+
+    const showPrompt = ({
+        message,
+        cancelLabel = "Cancel",
+        confirmLabel = "Confirm",
+    }: {
+        message: string;
+        cancelLabel?: string;
+        confirmLabel?: string;
+    }): Promise<boolean> => {
+        setModalData({ message, cancelLabel, confirmLabel });
+        setModalVisible(true);
+        return new Promise((resolve) => {
+            setResolveModal(() => resolve);
+        });
+    };
+
+    const handleModalResponse = (response: boolean) => {
+        setModalVisible(false);
+        setModalData(null);
+        resolveModal?.(response);
+        setResolveModal(null);
+    };
 
     useBackHandler(isBottomSheetVisible, () => {
         bottomSheetRef.current?.close();
@@ -57,14 +98,26 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
         [],
     );
 
-    const openOptionsContext = (id: string) => {
+    const openOptionsContext = (id: string, type: "file" | "folder") => {
+        switch (type) {
+            case "file":
+                uiStore.setFileOptionsContext(id);
+                break;
+            case "folder":
+                uiStore.setDirOptionsContext(id);
+                break;
+        }
         bottomSheetRef.current?.expand();
-        uiStore.setDirOptionsContext(id);
+    };
+
+    const clearContextOptions = () => {
+        uiStore.setDirOptionsContext(null);
+        uiStore.setFileOptionsContext(null);
     };
 
     const closeOptionsContext = () => {
         bottomSheetRef.current?.close();
-        uiStore.setDirOptionsContext(null);
+        clearContextOptions();
     };
 
     return (
@@ -72,6 +125,7 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
             value={{
                 openOptionsContext,
                 closeOptionsContext,
+                showPrompt,
             }}
         >
             {children}
@@ -84,6 +138,7 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
                     backgroundColor: colors.notification,
                     borderRadius: 0,
                 }}
+                onClose={clearContextOptions}
                 handleIndicatorStyle={{
                     backgroundColor: colors.text,
                 }}
@@ -94,6 +149,13 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
                         <FolderOptionsHeader />
                         <FolderOptionsActions />
                     </View>
+                    <Prompt
+                        visible={modalVisible}
+                        message={modalData?.message || ""}
+                        cancelLabel={modalData?.cancelLabel}
+                        confirmLabel={modalData?.confirmLabel}
+                        onResponse={handleModalResponse}
+                    />
                 </BottomSheetView>
             </BottomSheet>
         </FolderOptionsContext.Provider>

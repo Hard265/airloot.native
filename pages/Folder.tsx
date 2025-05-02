@@ -50,7 +50,7 @@ function FolderScreen({ route, navigation }: props) {
                     />
                 );
             },
-            headerRight: () => <FolderHeaderRight />,
+            headerRight: () => <FolderHeaderRight withSearch />,
         });
     }, [navigation, offsetStyle]);
 
@@ -72,7 +72,7 @@ function FolderScreen({ route, navigation }: props) {
             ) : ( */}
             <Animated.FlatList
                 data={contents}
-                className="flex-1"
+                className="flex-1 bg-background"
                 onScroll={scrollHandler}
                 contentContainerClassName="pb-[1000]"
                 renderItem={({ item }) => <FolderListItem item={item} />}

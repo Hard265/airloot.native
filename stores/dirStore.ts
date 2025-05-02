@@ -1,4 +1,4 @@
-import { retrieveDir, retrieveSubdirs } from "@/services/dirAPI";
+import { deleteDir, retrieveDir, retrieveSubdirs } from "@/services/dirAPI";
 import { defaultTo, filter, orderBy } from "lodash";
 import {
     action,
@@ -57,6 +57,13 @@ export class DirStore {
         const dir = await retrieveDir(id);
         runInAction(() => {
             this.dirs.set(dir.id, dir);
+        });
+    }
+
+    async delete(id: string) {
+        await deleteDir(id);
+        runInAction(() => {
+            this.dirs.delete(id);
         });
     }
 

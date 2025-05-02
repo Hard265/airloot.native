@@ -1,16 +1,13 @@
 import useSession from "@/hooks/useSession";
 import { HomeStackParamsList } from "@/Router";
-import userStore from "@/stores/userStore";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import * as Crypto from "expo-crypto";
 import { memoize } from "lodash";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
 
 type navigationProp = StackScreenProps<HomeStackParamsList, "User">;
 
@@ -27,25 +24,26 @@ const getHash = memoize(async (email: string) => {
 
 function User({ navigation }: navigationProp) {
     const theme = useTheme();
-    const session = useSession();
-    const [avatar, setAvatar] = useState({
-        loading: false,
-        uri: "",
-    });
-    const email = userStore.email || "";
+    const { signOut } = useSession();
+    // const session = useSession();
+    // const [avatar, setAvatar] = useState({
+    //     loading: false,
+    //     uri: "",
+    // });
+    // const email = "hardynamakhwa@gmail.com";
 
-    useEffect(() => {
-        setAvatar((v) => ({ ...v, loading: true }));
-        (async () => {
-            const hash = await getHash(email);
-            setAvatar((v) => ({
-                ...v,
-                uri: `https://www.gravatar.com/avatar/${hash}?s=${96}&d=retro`,
-            }));
-        })().finally(() => {
-            setAvatar((v) => ({ ...v, loading: false }));
-        });
-    }, [email]);
+    // useEffect(() => {
+    //     setAvatar((v) => ({ ...v, loading: true }));
+    //     (async () => {
+    //         const hash = await getHash(email);
+    //         setAvatar((v) => ({
+    //             ...v,
+    //             uri: `https://www.gravatar.com/avatar/${hash}?s=${96}&d=retro`,
+    //         }));
+    //     })().finally(() => {
+    //         setAvatar((v) => ({ ...v, loading: false }));
+    //     });
+    // }, [email]);
 
     return (
         <Modal
@@ -73,22 +71,22 @@ function User({ navigation }: navigationProp) {
                             </RectButton>
                         </View>
                         <View className="flex flex-row gap-4">
-                            {avatar.uri && (
+                            {/* {avatar.uri && (
                                 <Animated.Image
                                     sharedTransitionTag="_avatar"
                                     source={{ uri: avatar.uri }}
                                     className="size-24"
                                 />
-                            )}
+                            )} */}
                             <View className="flex flex-1 flex-col gap-0.5">
-                                <Text className="text-2xl font-medium color-text">
+                                <Text className="font-medium text-2xl color-text">
                                     Personal
                                 </Text>
                                 <Text
                                     numberOfLines={1}
                                     className="text-base color-text"
                                 >
-                                    {email}
+                                    hardynamakhwa@gmail.com
                                 </Text>
                                 <Text className="text-base text-green-500 dark:text-green-600">
                                     <Feather name="refresh-cw" /> Sync is on
@@ -96,7 +94,7 @@ function User({ navigation }: navigationProp) {
                             </View>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={() => session.signOut()}>
+                    <TouchableOpacity onPress={() => signOut()}>
                         <View
                             accessible
                             accessibilityRole="button"

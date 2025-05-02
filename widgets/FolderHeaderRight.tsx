@@ -8,7 +8,11 @@ import { observer } from "mobx-react-lite";
 import { View } from "react-native";
 import { useBackHandler } from "@/hooks/useBackHandler";
 
-function FolderHeaderRight() {
+interface FolderHeaderRightProps {
+    withSearch?: boolean;
+}
+
+function FolderHeaderRight(props: FolderHeaderRightProps) {
     const theme = useTheme();
 
     useBackHandler(rootStore.uiStore.selectionMode, () => {
@@ -16,7 +20,9 @@ function FolderHeaderRight() {
         return true;
     });
 
-    const hasItems = !isEmpty(rootStore.dirStore.currentSubdirs);
+    const hasItems =
+        !isEmpty(rootStore.dirStore.currentSubdirs) ||
+        !isEmpty(rootStore.fileStore.currentFiles);
 
     return (
         <View className="flex-row items-center px-4">
@@ -29,28 +35,37 @@ function FolderHeaderRight() {
                 }}
             >
                 <Feather
-                    name={
-                        rootStore.uiStore.selectionMode ? "x-square" : "square"
+                    name="square"
+                    color={
+                        rootStore.uiStore.selectionMode
+                            ? theme.colors.primary
+                            : theme.colors.text
                     }
                     size={20}
                 />
             </IconButton>
-            <IconButton disabled={!hasItems}>
-                <Feather name="search" size={20} />
-            </IconButton>
+            {props.withSearch && (
+                <IconButton disabled={!hasItems}>
+                    <Feather name="search" size={20} />
+                </IconButton>
+            )}
             <IconButton
                 onPress={() => rootStore.uiStore.switchSort()}
                 disabled={!hasItems}
             >
-                <MaterialCommunityIcons
-                    name={
-                        rootStore.uiStore.sorting === SORT.ASC
-                            ? "sort-alphabetical-ascending"
-                            : "sort-alphabetical-descending"
-                    }
-                    size={22}
-                    color={theme.colors.text}
-                />
+                {rootStore.uiStore.sorting === SORT.ASC ? (
+                    <MaterialCommunityIcons
+                        name="sort-alphabetical-ascending"
+                        size={22}
+                        color={theme.colors.text}
+                    />
+                ) : (
+                    <MaterialCommunityIcons
+                        name="sort-alphabetical-descending"
+                        size={22}
+                        color={theme.colors.primary}
+                    />
+                )}
             </IconButton>
         </View>
     );
