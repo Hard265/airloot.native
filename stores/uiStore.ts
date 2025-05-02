@@ -25,11 +25,8 @@ export class UiStore {
     sorting: SORT = SORT.ASC;
     selectedIds: Set<string> = new ObservableSet();
 
-    contextMenuRef = createRef<BottomSheet>();
-    contextMenu: {
-        targetId: string;
-        type: TargetType;
-    } | null = null;
+    dirOptionsContext: string | null = null;
+	fileOptionsContext: string | null = null;
 
     constructor(rootStore: RootStore) {
         makeObservable(this, {
@@ -38,9 +35,11 @@ export class UiStore {
             switchSort: action,
             toggleSelection: action,
             clearSelection: action,
-            setContextMenuTarget: action,
-            clearContextMenuTarget: action,
-        });
+			dirOptionsContext: observable,
+		    fileOptionsContext: observable,
+			setDirOptionsContext: action,
+			setFileOptionsContext: action,
+		});
         this.rootStore = rootStore;
     }
 
@@ -55,17 +54,15 @@ export class UiStore {
         if (this.selectedIds.has(id)) this.selectedIds.delete(id);
         else this.selectedIds.add(id);
     }
-    clearSelection() {
+    
+	clearSelection() {
         this.selectedIds.clear();
     }
 
-    setContextMenuTarget(id: string, type: TargetType) {
-        this.contextMenuRef.current?.expand();
-        this.contextMenu = { targetId: id, type };
-    }
-
-    clearContextMenuTarget() {
-        this.contextMenuRef.current?.close();
-        this.contextMenu = null;
-    }
+    setDirOptionsContext(id: string | null) {
+		this.dirOptionsContext = id;
+	}
+	setFileOptionsContext(id: string | null) {
+		this.fileOptionsContext = id;
+	}
 }
