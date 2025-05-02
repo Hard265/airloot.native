@@ -1,16 +1,5 @@
-import { ReactNode } from "react";
-import UploadOptions from "../partials/UploadOptions";
-import FileOptionsProvider from "../providers/FileOptionsProvider";
+import { PropsWithChildren } from "react";
 
-interface HomeLayoutProps {
-    children: ReactNode;
-}
-
-export default function HomeLayout(props: HomeLayoutProps) {
-    return (
-        <FileOptionsProvider>
-            {props.children}
-            <UploadOptions />
-        </FileOptionsProvider>
-    );
+export default function HomeLayout(props: PropsWithChildren) {
+    return <>{props.children}</>;
 }

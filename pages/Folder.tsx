@@ -1,17 +1,9 @@
 // External imports
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
-import { has, isEmpty, trim } from "lodash";
+import { trim } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import {
-    ActivityIndicator,
-    RefreshControl,
-    Text,
-    TextInput,
-    View,
-} from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import { ActivityIndicator, Text, TextInput, View } from "react-native";
 import Animated, {
     Extrapolation,
     interpolate,
@@ -21,22 +13,20 @@ import Animated, {
 } from "react-native-reanimated";
 
 // Internal imports
-import { IconButton } from "@/components/Button";
-import useFolder from "@/hooks/useFolder";
-import { Dir } from "@/stores/dirStore";
 import rootStore from "@/stores/rootStore";
-import { SORT, TargetType } from "@/stores/uiStore";
 import FolderHeaderTitle from "@/widgets/FolderHeaderTitle";
+import FolderListItem from "@/widgets/FolderListItem";
 import { observer } from "mobx-react-lite";
 import type { HomeStackParamsList } from "../Router";
+import FolderHeaderRight from "@/widgets/FolderHeaderRight";
 
 // Types
 type props = StackScreenProps<HomeStackParamsList, "Folder">;
 
 // Main component
 function FolderScreen({ route, navigation }: props) {
-    const theme = useTheme();
-    const { fetching, rename } = useFolder();
+    const { dirStore, fileStore } = rootStore;
+    const contents = [...dirStore.currentSubdirs, ...fileStore.currentFiles];
 
     useFocusEffect(
         useCallback(() => {
@@ -60,7 +50,7 @@ function FolderScreen({ route, navigation }: props) {
                     />
                 );
             },
-            headerRight: () => <HeaderRight />,
+            headerRight: () => <FolderHeaderRight />,
         });
     }, [navigation, offsetStyle]);
 
@@ -75,75 +65,29 @@ function FolderScreen({ route, navigation }: props) {
         },
     });
 
-    const renderItem = (item: Dir) => {
-        return has(item, "size") ? (
-            <RectButton>
-                <View className="flex flex-row items-center gap-4 p-4">
-                    <Feather
-                        name="file-text"
-                        size={20}
-                        color={theme.colors.text}
-                    />
-                    {rename.id === item.id ? (
-                        <TextInput value={item.name} />
-                    ) : (
-                        <Text className="font-[NeueMontreal-Medium] text-lg color-text">
-                            {item?.name}
-                        </Text>
-                    )}
-                </View>
-            </RectButton>
-        ) : (
-            <RectButton
-                onPress={() => navigation.push("Folder", { id: item.id })}
-                onLongPress={() =>
-                    rootStore.uiStore.setContextMenuTarget(
-                        item.id,
-                        TargetType.FOLDER,
-                    )
-                }
-            >
-                <View className="flex flex-row items-center gap-4 p-4">
-                    <Feather
-                        name="folder"
-                        size={20}
-                        color={theme.colors.text}
-                    />
-                    {rename.id === item.id ? (
-                        <RenamingInputBox name={item.name} id={item.id} />
-                    ) : (
-                        <Text className="font-[NeueMontreal-Medium] text-lg color-text">
-                            {item?.name}
-                        </Text>
-                    )}
-                </View>
-            </RectButton>
-        );
-    };
-
     return (
         <>
-            {fetching && isEmpty(rootStore.dirStore.currentSubdirs) ? (
+            {/* {fetching && isEmpty(rootStore.dirStore.currentSubdirs) ? (
                 <LoadingIndicator theme={theme} />
-            ) : (
-                <Animated.FlatList
-                    data={rootStore.dirStore.currentSubdirs}
-                    className="flex-1"
-                    onScroll={scrollHandler}
-                    contentContainerClassName="pb-[1000]"
-                    renderItem={({ item }) => renderItem(item)}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={fetching}
-                            colors={[theme.colors.text]}
-                            progressBackgroundColor={theme.colors.notification}
-                            progressViewOffset={85}
-                        />
-                    }
-                    ListHeaderComponent={<ListHeader />}
-                    ListEmptyComponent={<EmptyList />}
-                />
-            )}
+            ) : ( */}
+            <Animated.FlatList
+                data={contents}
+                className="flex-1"
+                onScroll={scrollHandler}
+                contentContainerClassName="pb-[1000]"
+                renderItem={({ item }) => <FolderListItem item={item} />}
+                // refreshControl={
+                //     <RefreshControl
+                //         refreshing={fetching}
+                //         colors={[theme.colors.text]}
+                //         progressBackgroundColor={theme.colors.notification}
+                //         progressViewOffset={85}
+                //     />
+                // }
+                ListHeaderComponent={<ListHeader />}
+                ListEmptyComponent={<EmptyList />}
+            />
+            {/* )} */}
         </>
     );
 }
@@ -151,36 +95,6 @@ function FolderScreen({ route, navigation }: props) {
 export default observer(FolderScreen);
 
 // Sub-components
-
-const HeaderRight = observer(() => {
-    const theme = useTheme();
-    const hasItems = !isEmpty(rootStore.dirStore.currentSubdirs);
-
-    return (
-        <View className="flex-row items-center px-4">
-            <IconButton disabled={!hasItems}>
-                <Feather name="square" size={20} color={theme.colors.text} />
-            </IconButton>
-            <IconButton disabled={!hasItems}>
-                <Feather name="search" size={20} color={theme.colors.text} />
-            </IconButton>
-            <IconButton
-                onPress={() => rootStore.uiStore.switchSort()}
-                disabled={!hasItems}
-            >
-                <MaterialCommunityIcons
-                    name={
-                        rootStore.uiStore.sorting === SORT.ASC
-                            ? "sort-alphabetical-ascending"
-                            : "sort-alphabetical-descending"
-                    }
-                    size={22}
-                    color={theme.colors.text}
-                />
-            </IconButton>
-        </View>
-    );
-});
 
 interface LoadingIndicatorProps {
     theme: { colors: { text: string } };
@@ -222,16 +136,15 @@ interface RenamingInputBoxProps {
 function RenamingInputBox({ id, name }: RenamingInputBoxProps) {
     const { colors } = useTheme();
     const [input, setInput] = useState(name);
-    const { rename } = useFolder();
 
     const handleSubmit = () => {
         if (trim(input)) {
-            rename.onRename(id, input);
+            // rename.onRename(id, input);
         }
     };
 
     const handleInputBlur = () => {
-        rename.setId(null);
+        // rename.setId(null);
     };
     return (
         <View className="flex-1">

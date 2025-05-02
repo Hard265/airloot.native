@@ -6,7 +6,7 @@ export async function retrieveFile(id: string): Promise<File> {
 }
 
 export async function retrieveFiles(id: string | null): Promise<File[]> {
-    if (!id) return (await api.get(`/files/`)).data.results;
+    if (!id) return (await api.get(`/files/`)).data;
     return (await api.get(`/folders/${id}/files/`)).data.results;
 }
 

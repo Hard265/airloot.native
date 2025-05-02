@@ -1,27 +1,26 @@
 import rootStore from "@/stores/rootStore";
 import dayjs from "dayjs";
+import { observer } from "mobx-react-lite";
 import { Text, View } from "react-native";
 
-export default function FolderOptionsHeader() {
-    const { dirStore } = rootStore;
+function FolderOptionsHeader() {
+    const dir = rootStore.uiStore.currentDirContext;
 
     return (
         <View className="flex flex-col gap-1 p-4">
             <Text className="font-[Roobert-Bold] text-2xl color-text">
-                {dirStore.currentDir?.name}
+                {dir?.name}
             </Text>
             <View className="flex flex-row items-center justify-between">
                 <Text className="font-[NeueMontreal-Regular] color-text/50">
-                    {dayjs(dirStore.currentDir?.created_at).format(
-                        "MMM DD, YYYY",
-                    )}
+                    {dayjs(dir?.created_at).format("MMM DD, YYYY")}
                 </Text>
                 <Text className="font-[NeueMontreal-Regular] color-text/65">
-                    {dayjs(dirStore.currentDir?.created_at).format(
-                        "[At] HH:mm:ss",
-                    )}
+                    {dayjs(dir?.created_at).format("[At] HH:mm:ss")}
                 </Text>
             </View>
         </View>
     );
 }
+
+export default observer(FolderOptionsHeader);

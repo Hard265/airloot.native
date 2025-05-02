@@ -1,4 +1,3 @@
-import BottomSheet from "@gorhom/bottom-sheet";
 import {
     action,
     computed,
@@ -6,8 +5,8 @@ import {
     observable,
     ObservableSet,
 } from "mobx";
-import { createRef } from "react";
 import type { RootStore } from "./rootStore";
+import { Dir } from "./dirStore";
 
 export enum SORT {
     ASC = "asc",
@@ -24,22 +23,29 @@ export class UiStore {
 
     sorting: SORT = SORT.ASC;
     selectedIds: Set<string> = new ObservableSet();
+    selectionMode: boolean = false;
 
     dirOptionsContext: string | null = null;
-	fileOptionsContext: string | null = null;
+    fileOptionsContext: string | null = null;
+    contextMenuRef: any;
 
     constructor(rootStore: RootStore) {
         makeObservable(this, {
             sorting: observable,
+            selectedIds: observable,
             selectedCount: computed,
+            selectionMode: observable,
             switchSort: action,
             toggleSelection: action,
             clearSelection: action,
-			dirOptionsContext: observable,
-		    fileOptionsContext: observable,
-			setDirOptionsContext: action,
-			setFileOptionsContext: action,
-		});
+            dirOptionsContext: observable,
+            fileOptionsContext: observable,
+            currentDirContext: computed,
+            currentFileContext: computed,
+            setDirOptionsContext: action,
+            setFileOptionsContext: action,
+            turnSelectionMode: action,
+        });
         this.rootStore = rootStore;
     }
 
@@ -50,19 +56,38 @@ export class UiStore {
     get selectedCount() {
         return this.selectedIds.size;
     }
+
+    turnSelectionMode(mode: boolean) {
+        if (!mode) this.clearSelection();
+        this.selectionMode = mode;
+    }
+
     toggleSelection(id: string) {
         if (this.selectedIds.has(id)) this.selectedIds.delete(id);
         else this.selectedIds.add(id);
     }
-    
-	clearSelection() {
+
+    clearSelection() {
         this.selectedIds.clear();
     }
 
+    get currentDirContext() {
+        if (this.dirOptionsContext)
+            return this.rootStore.dirStore.dirs.get(this.dirOptionsContext);
+        return;
+    }
+
+    get currentFileContext() {
+        if (this.fileOptionsContext)
+            return this.rootStore.fileStore.files.get(this.fileOptionsContext);
+        return;
+    }
+
     setDirOptionsContext(id: string | null) {
-		this.dirOptionsContext = id;
-	}
-	setFileOptionsContext(id: string | null) {
-		this.fileOptionsContext = id;
-	}
+        this.dirOptionsContext = id;
+    }
+
+    setFileOptionsContext(id: string | null) {
+        this.fileOptionsContext = id;
+    }
 }

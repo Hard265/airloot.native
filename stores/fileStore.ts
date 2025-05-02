@@ -1,7 +1,13 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import type { RootStore } from "./rootStore";
-import { defaultTo, filter } from "lodash";
 import { retrieveFiles } from "@/services/fileAPI";
+import { defaultTo, filter, orderBy } from "lodash";
+import {
+    action,
+    computed,
+    makeObservable,
+    observable,
+    runInAction,
+} from "mobx";
+import type { RootStore } from "./rootStore";
 
 export interface File {
     id: string;
@@ -17,7 +23,12 @@ export class FileStore {
     files: Map<string, File> = new Map();
 
     constructor(rootStore: RootStore) {
-        makeObservable(this, { files: observable });
+        makeObservable(this, {
+            files: observable,
+            list: computed,
+            currentFiles: computed,
+            retrieveFiles: action,
+        });
         this.rootStore = rootStore;
     }
 
@@ -25,10 +36,14 @@ export class FileStore {
         return Array.from(this.files.values());
     }
 
-    currentFiles() {
-        return filter(this.list, {
-            folder: defaultTo(this.rootStore.dirStore.current, null),
-        });
+    get currentFiles(): File[] {
+        return orderBy(
+            filter(this.list, {
+                folder: defaultTo(this.rootStore.dirStore.current, null),
+            }),
+            ({ name }) => name,
+            this.rootStore.uiStore.sorting,
+        );
     }
 
     async retrieveFiles(id: string | null) {

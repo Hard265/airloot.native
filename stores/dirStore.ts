@@ -62,12 +62,15 @@ export class DirStore {
 
     async navigateTo(id: string | null) {
         this.current = id;
-        const dirs = await retrieveSubdirs(id);
-
+        const [dirs] = await Promise.all([
+            await retrieveSubdirs(id),
+            id ? await this.retrive(id) : undefined,
+        ]);
         runInAction(() => {
             for (const dir of dirs) {
                 this.dirs.set(dir.id, dir);
             }
         });
+        await this.rootStore.fileStore.retrieveFiles(id);
     }
 }

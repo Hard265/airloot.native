@@ -7,16 +7,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 import useSession from "./hooks/useSession";
+import FolderLayout from "./layouts/FolderLayout";
+import HomeLayout from "./layouts/HomeLayout";
+import Folder from "./pages/Folder";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Reset from "./pages/Reset";
 import ResetLinkSent from "./pages/ResetLinkSent";
 import Settings from "./pages/Settings";
 import Signin from "./pages/Signin";
-import FolderOptionsProvider from "./providers/FolderOptionsProvider";
-import Folder from "./pages/Folder";
-import HomeProvider from "./providers/HomeProvider";
-import FolderOptions from "./widgets/FolderOptions";
 
 export type RootStackParamsList = {
     Index: undefined;
@@ -55,21 +54,12 @@ function HomeRouter() {
                 title: "",
                 animation: "slide_from_right",
             }}
+            layout={(props) => <HomeLayout {...props} />}
         >
-            <HomeStack.Screen
-                name="Home"
-                component={Home}
-                // layout={(props) => (
-                //     <HomeProvider {...props}>{props.children}</HomeProvider>
-                // )}
-            />
             <HomeStack.Group
-                screenLayout={(props) => (
-                    <FolderOptionsProvider {...props}>
-                        <FolderOptions>{props.children}</FolderOptions>
-                    </FolderOptionsProvider>
-                )}
+                screenLayout={(props) => <FolderLayout {...props} />}
             >
+                <HomeStack.Screen name="Home" component={Home} />
                 <HomeStack.Screen name="Folder" component={Folder} />
             </HomeStack.Group>
             {/* <HomeStack.Screen
