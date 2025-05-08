@@ -1,41 +1,35 @@
 import { useBackHandler } from "@/hooks/useBackHandler";
-import { Dir } from "@/stores/dirStore";
-import { File } from "@/stores/fileStore";
-import FolderOptions from "@/widgets/FolderOptions";
+import PlusFab from "@/widgets/PlusFab";
+import PlusOptions from "@/widgets/PlusOptions";
 import BottomSheet, {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
-import {
+import React, {
     createContext,
     PropsWithChildren,
     useCallback,
     useRef,
     useState,
 } from "react";
+import { View } from "react-native";
 
-type FileSystemEntity = File | Dir;
+export interface PlusOptionsContextType {
+    show: () => void;
+    hide: () => void;
+}
 
-export const FolderOptionsContext = createContext<{
-    openBottomSheet: (item: FileSystemEntity) => void;
-    closeBottomSheet: () => void;
-    selectedItem: FileSystemEntity | null;
-}>({
-    openBottomSheet: () => {},
-    closeBottomSheet: () => {},
-    selectedItem: null,
-});
+export const PlusOptionsContext = createContext<
+    PlusOptionsContextType | undefined
+>(undefined);
 
-export default function FolderOptionsProvider({ children }: PropsWithChildren) {
+export const PlusOptionsProvider = ({ children }: PropsWithChildren) => {
     const { colors } = useTheme();
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<FileSystemEntity | null>(
-        null,
-    );
 
     const handleBottomSheetVisibilityChange = (index: number) => {
         setIsBottomSheetVisible(index >= 0);
@@ -45,17 +39,6 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
         bottomSheetRef.current?.close();
         return true;
     });
-
-    const openBottomSheet = (item: FileSystemEntity) => {
-        setSelectedItem(item);
-        bottomSheetRef.current?.snapToIndex(0);
-    };
-
-    const closeBottomSheet = () => {
-        bottomSheetRef.current?.close();
-        setSelectedItem(null);
-    };
-
     const renderBackdropComponent = useCallback(
         (props: BottomSheetBackdropProps) => (
             <BottomSheetBackdrop
@@ -67,31 +50,30 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
         [],
     );
 
+    const show = () => bottomSheetRef.current?.expand();
+    const hide = () => bottomSheetRef.current?.close();
+
     return (
-        <FolderOptionsContext.Provider
-            value={{
-                openBottomSheet,
-                closeBottomSheet,
-                selectedItem,
-            }}
-        >
-            {children}
+        <PlusOptionsContext.Provider value={{ show, hide }}>
+            <View className="relative flex-1">
+                {children}
+                <PlusFab />
+            </View>
             <BottomSheet
                 ref={bottomSheetRef}
                 backgroundStyle={{
-                    backgroundColor: colors.notification,
                     borderRadius: 0,
+                    backgroundColor: colors.notification,
                 }}
                 handleIndicatorStyle={{ backgroundColor: colors.text }}
                 onChange={handleBottomSheetVisibilityChange}
                 backdropComponent={renderBackdropComponent}
                 index={-1}
-                enablePanDownToClose
             >
                 <BottomSheetView>
-                    <FolderOptions />
+                    <PlusOptions />
                 </BottomSheetView>
             </BottomSheet>
-        </FolderOptionsContext.Provider>
+        </PlusOptionsContext.Provider>
     );
-}
+};
