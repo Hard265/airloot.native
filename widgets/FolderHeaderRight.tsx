@@ -24,6 +24,9 @@ function FolderHeaderRight(props: FolderHeaderRightProps) {
         !isEmpty(rootStore.dirStore.currentSubdirs) ||
         !isEmpty(rootStore.fileStore.currentFiles);
 
+    const inSelectionMode = rootStore.uiStore.selectionMode;
+    const hasSelections = rootStore.uiStore.selectedCount > 0;
+
     return (
         <View className="flex-row items-center px-4">
             <IconButton
@@ -44,29 +47,36 @@ function FolderHeaderRight(props: FolderHeaderRightProps) {
                     size={20}
                 />
             </IconButton>
-            {props.withSearch && (
+            {!inSelectionMode && props.withSearch && (
                 <IconButton disabled={!hasItems}>
                     <Feather name="search" size={20} />
                 </IconButton>
             )}
-            <IconButton
-                onPress={() => rootStore.uiStore.switchSort()}
-                disabled={!hasItems}
-            >
-                {rootStore.uiStore.sorting === SORT.ASC ? (
-                    <MaterialCommunityIcons
-                        name="sort-alphabetical-ascending"
-                        size={22}
-                        color={theme.colors.text}
-                    />
-                ) : (
-                    <MaterialCommunityIcons
-                        name="sort-alphabetical-descending"
-                        size={22}
-                        color={theme.colors.primary}
-                    />
-                )}
-            </IconButton>
+            {!inSelectionMode && (
+                <IconButton
+                    onPress={() => rootStore.uiStore.switchSort()}
+                    disabled={!hasItems}
+                >
+                    {rootStore.uiStore.sorting === SORT.ASC ? (
+                        <MaterialCommunityIcons
+                            name="sort-alphabetical-ascending"
+                            size={22}
+                            color={theme.colors.text}
+                        />
+                    ) : (
+                        <MaterialCommunityIcons
+                            name="sort-alphabetical-descending"
+                            size={22}
+                            color={theme.colors.primary}
+                        />
+                    )}
+                </IconButton>
+            )}
+            {inSelectionMode && (
+                <IconButton disabled={!hasSelections}>
+                    <Feather name="trash-2" size={20} />
+                </IconButton>
+            )}
         </View>
     );
 }
