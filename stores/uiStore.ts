@@ -6,7 +6,6 @@ import {
     ObservableSet,
 } from "mobx";
 import type { RootStore } from "./rootStore";
-import { Dir } from "./dirStore";
 
 export enum SORT {
     ASC = "asc",
@@ -20,14 +19,14 @@ export enum TargetType {
 
 export class UiStore {
     rootStore: RootStore;
-
     sorting: SORT = SORT.ASC;
     selectedIds: Set<string> = new ObservableSet();
     selectionMode: boolean = false;
 
-    dirOptionsContext: string | null = null;
-    fileOptionsContext: string | null = null;
-
+    options: {
+        type: "folder" | "file";
+        id: string;
+    } | null = null;
     renaming: string | null = null;
 
     constructor(rootStore: RootStore) {
@@ -39,14 +38,11 @@ export class UiStore {
             switchSort: action,
             toggleSelection: action,
             clearSelection: action,
-            dirOptionsContext: observable,
-            fileOptionsContext: observable,
-            currentDirContext: computed,
-            currentFileContext: computed,
+            options: observable,
+            getOptions: computed,
             renaming: observable,
             setRenameId: action,
-            setDirOptionsContext: action,
-            setFileOptionsContext: action,
+            setOptions: action,
             turnSelectionMode: action,
         });
         this.rootStore = rootStore;
@@ -78,23 +74,28 @@ export class UiStore {
         this.renaming = id;
     }
 
-    get currentDirContext() {
-        if (this.dirOptionsContext)
-            return this.rootStore.dirStore.dirs.get(this.dirOptionsContext);
-        return;
+    get getOptions() {
+        if (!this.options) return null;
+        switch (this.options.type) {
+            case "folder":
+                return (
+                    this.rootStore.dirStore.dirs.get(this.options.id) || null
+                );
+            default:
+                return (
+                    this.rootStore.fileStore.files.get(this.options.id) || null
+                );
+        }
     }
 
-    get currentFileContext() {
-        if (this.fileOptionsContext)
-            return this.rootStore.fileStore.files.get(this.fileOptionsContext);
-        return;
+    setOptions(type: "file" | "folder", id: string) {
+        this.options = {
+            id,
+            type,
+        };
     }
 
-    setDirOptionsContext(id: string | null) {
-        this.dirOptionsContext = id;
-    }
-
-    setFileOptionsContext(id: string | null) {
-        this.fileOptionsContext = id;
+    clearOptions(id: string | null) {
+        this.options = null;
     }
 }

@@ -14,11 +14,11 @@ import Animated, {
 
 // Internal imports
 import rootStore from "@/stores/rootStore";
+import FolderHeaderRight from "@/widgets/FolderHeaderRight";
 import FolderHeaderTitle from "@/widgets/FolderHeaderTitle";
 import FolderListItem from "@/widgets/FolderListItem";
 import { observer } from "mobx-react-lite";
 import type { HomeStackParamsList } from "../Router";
-import FolderHeaderRight from "@/widgets/FolderHeaderRight";
 
 // Types
 type props = StackScreenProps<HomeStackParamsList, "Folder">;

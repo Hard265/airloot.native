@@ -1,45 +1,36 @@
-import api from "@/services/api";
-import { makeObservable, observable, runInAction } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
+import { fetchUser, updateUser } from "@/services/userAPI";
+import type { RootStore } from "./rootStore";
 
-class UserStore {
-    lodaing: boolean = false;
-    id: string | null = null;
-    email: string | null = null;
-
-    constructor() {
-        makeObservable(this, {
-            id: observable,
-            email: observable,
-        });
-        this.setup();
-    }
-
-    async setup() {
-        runInAction(() => {
-            this.lodaing = true;
-        });
-        try {
-            const { data = {} } = await api.get("/user/");
-            runInAction(() => this.setUser(data.id, data.email));
-        } catch (error) {
-            console.log(error);
-        } finally {
-            runInAction(() => {
-                this.lodaing = false;
-            });
-        }
-    }
-
-    setUser(id: string, email: string) {
-        this.id = id;
-        this.email = email;
-    }
-
-    clear() {
-        this.id = null;
-        this.email = null;
-    }
+export interface User {
+    id: string;
+    email: string;
 }
 
-const userStore = new UserStore();
-export default userStore;
+export class UserStore {
+    rootStore: RootStore;
+    user: User | null = null;
+
+    constructor(rootStore: RootStore) {
+        makeObservable(this, {
+            user: observable,
+            fetchUser: action,
+            updateUser: action,
+        });
+        this.rootStore = rootStore;
+    }
+
+    async fetchUser() {
+        const userData = await fetchUser();
+        runInAction(() => {
+            this.user = userData;
+        });
+    }
+
+    async updateUser(data: Partial<User>) {
+        const updatedUser = await updateUser(data);
+        runInAction(() => {
+            this.user = updatedUser;
+        });
+    }
+}

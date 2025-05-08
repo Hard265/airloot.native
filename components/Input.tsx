@@ -31,21 +31,20 @@ export default function Input(props: InputProps) {
                 secureTextEntry={props.secureTextEntry}
                 keyboardType={props.type}
                 className={clsx(
-                    "border border-border px-4 font-[NeueMontreal-Regular] text-base color-text focus:border-2 focus:border-primary",
-                    !isEmpty(props.errors) &&
-                        "border-2 border-red-500 dark:border-red-400",
+                    "border-2 border-border/65 px-4 font-[NeueMontreal-Medium] text-base color-text focus:border-primary",
+                    !isEmpty(props.errors) && "border-2 border-error",
                 )}
             />
             {!isEmpty(props.errors) &&
                 props.errors?.map((error, i) => (
                     <View key={i} className="flex flex-row items-start gap-0.5">
-                        <Text className="text-red-500 dark:text-red-400">
+                        <Text className="text-error">
                             <MaterialCommunityIcons
                                 name="circle-medium"
                                 size={18}
                             />
                         </Text>
-                        <Text className="flex-1 font-[NeueMontreal-Regular] text-red-500 dark:text-red-400">
+                        <Text className="flex-1 font-[NeueMontreal-Regular] text-error">
                             {upperFirst(error)}
                         </Text>
                     </View>

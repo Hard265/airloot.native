@@ -1,5 +1,5 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link } from "@react-navigation/native";
+import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Link, useTheme } from "@react-navigation/native";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
@@ -10,6 +10,7 @@ import useSession from "@/hooks/useSession";
 import Animated, { SlideInUp } from "react-native-reanimated";
 
 export default function Signin() {
+    const { colors } = useTheme();
     const { signIn } = useSession();
     const [pending, setPending] = useState(false);
     const [formState, setFormState] = useState({
@@ -46,7 +47,7 @@ export default function Signin() {
     const isFormTrue = Object.values(formState).every(Boolean);
 
     return (
-        <ScrollView>
+        <ScrollView className="bg-background">
             <Text className="p-4 font-[Roobert-Bold] text-3xl color-text">
                 Sign In
             </Text>
@@ -105,11 +106,11 @@ export default function Signin() {
 
             <View className="flex items-start p-4">
                 <RectButton>
-                    <View className="flex flex-row items-center gap-4 border border-border p-3">
-                        <MaterialCommunityIcons
+                    <View className="flex flex-row items-center gap-4 border border-text/50 p-3 hover:border-red-600">
+                        <FontAwesome6
                             name="google"
                             size={20}
-                            color={"#fff"}
+                            color={colors.text}
                         />
                         <Text className="font-[NeueMontreal-Medium] color-text">
                             Sign in with Google

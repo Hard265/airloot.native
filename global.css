@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind variants;
+
+@layer components {
+    .heading {
+        @apply font-[Roobert-Heavy] text-3xl color-text;
+    }
+
+    .title {
+        @apply font-[Roobert-Heavy] text-2xl color-text;
+    }
+
+    .subtitle {
+        @apply font-[NeueMontreal-Regular] text-base color-text/65;
+    }
+
+    .row {
+        @apply flex flex-row items-center gap-4;
+    }
+    .col {
+        @apply flex flex-col gap-4;
+    }
+}

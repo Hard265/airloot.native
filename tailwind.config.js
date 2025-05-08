@@ -7,7 +7,11 @@ module.exports = {
         "./components/**/*.{js,jsx,ts,tsx}",
         "./partials/**/*.{js,jsx,ts,tsx}",
         "./widgets/**/*.{js,jsx,ts,tsx}",
+        "./providers/**/*.{js,jsx,ts,tsx}",
     ],
+    experimental: {
+        optimizeUniversalDefaults: true,
+    },
     presets: [require("nativewind/preset")],
     theme: {
         extend: {

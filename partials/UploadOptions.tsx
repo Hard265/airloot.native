@@ -1,3 +1,4 @@
+import { useBackHandler } from "@/hooks/useBackHandler";
 import Feather from "@expo/vector-icons/Feather";
 import BottomSheet, {
     BottomSheetBackdrop,
@@ -5,14 +6,12 @@ import BottomSheet, {
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useTheme } from "@react-navigation/native";
-import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { BackHandler, View } from "react-native";
+import { noop } from "lodash";
+import { useCallback, useRef, useState } from "react";
+import { View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Animated, { ZoomInUp, ZoomOutDown } from "react-native-reanimated";
 import { Text } from "../components/Text";
-import UploadOptionsCreate from "./UploadOptionsCreate";
 
 enum modes {
     "RENAMING",
@@ -35,48 +34,13 @@ export default function UploadOptions() {
         [],
     );
 
-    useEffect(() => {
-        const handleBackButtonPress = () => {
-            if (isBottomSheetVisible) {
-                bottomSheetRef.current?.close();
-                return true;
-            }
-            return false;
-        };
-
-        const backHandlerSubscription = BackHandler.addEventListener(
-            "hardwareBackPress",
-            handleBackButtonPress,
-        );
-
-        return () => backHandlerSubscription.remove();
-    }, [isBottomSheetVisible]);
+    useBackHandler(isBottomSheetVisible, () => {
+        bottomSheetRef.current?.close();
+        return true;
+    });
 
     const handleBottomSheetVisibilityChange = (index: number) => {
         setIsBottomSheetVisible(index >= 0);
-    };
-
-    const handleDocumentSelection = () => {
-        DocumentPicker.getDocumentAsync({
-            copyToCacheDirectory: false,
-            multiple: true,
-            type: "*/*",
-        }).then((document) => {
-            console.log(document.assets);
-        });
-    };
-
-    const handleCameraLaunch = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images", "videos", "livePhotos"],
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-        console.log(result);
-        if (!result.canceled) {
-            console.log(result.assets);
-        }
     };
 
     return (
@@ -109,50 +73,47 @@ export default function UploadOptions() {
                 handleIndicatorStyle={{ backgroundColor: theme.colors.text }}
             >
                 <BottomSheetView className="">
-                    {mode === null && (
-                        <Animated.View className="flex flex-row justify-evenly p-4">
-                            <RectButton onPress={() => setMode(modes.RENAMING)}>
-                                <View className="flex-col items-center justify-center gap-3 p-4">
-                                    <Text>
-                                        <Feather name="folder-plus" size={24} />
-                                    </Text>
-                                    <Text>Folder</Text>
-                                </View>
-                            </RectButton>
-                            <RectButton onPress={handleDocumentSelection}>
-                                <View className="flex-col items-center justify-center gap-3 p-4">
-                                    <Text>
-                                        <Feather
-                                            name="upload-cloud"
-                                            size={24}
-                                        />
-                                    </Text>
-                                    <Text>Upload</Text>
-                                </View>
-                            </RectButton>
-                            <RectButton onPress={handleCameraLaunch}>
-                                <View className="flex-col items-center justify-center gap-3 p-4">
-                                    <Text>
-                                        <Feather name="image" size={24} />
-                                    </Text>
-                                    <Text>Media</Text>
-                                </View>
-                            </RectButton>
-                            <RectButton>
-                                <View className="flex-col items-center justify-center gap-3 p-4">
-                                    <Text>
-                                        <Feather name="user-plus" size={24} />
-                                    </Text>
-                                    <Text>User</Text>
-                                </View>
-                            </RectButton>
-                        </Animated.View>
-                    )}
-                    {mode === modes.RENAMING && (
+                    <Animated.View className="flex flex-row justify-evenly p-4">
+                        <RectButton onPress={() => setMode(modes.RENAMING)}>
+                            <View className="flex-col items-center justify-center gap-3 p-4">
+                                <Text>
+                                    <Feather name="folder-plus" size={24} />
+                                </Text>
+                                <Text>Folder</Text>
+                            </View>
+                        </RectButton>
+                        <RectButton onPress={noop}>
+                            <View className="flex-col items-center justify-center gap-3 p-4">
+                                <Text>
+                                    <Feather name="upload-cloud" size={24} />
+                                </Text>
+                                <Text>Upload</Text>
+                            </View>
+                        </RectButton>
+                        <RectButton onPress={noop}>
+                            <View className="flex-col items-center justify-center gap-3 p-4">
+                                <Text>
+                                    <Feather name="image" size={24} />
+                                </Text>
+                                <Text>Media</Text>
+                            </View>
+                        </RectButton>
+                        <RectButton>
+                            <View className="flex-col items-center justify-center gap-3 p-4">
+                                <Text>
+                                    <Feather name="user-plus" size={24} />
+                                </Text>
+                                <Text>User</Text>
+                            </View>
+                        </RectButton>
+                    </Animated.View>
+                    {/* {mode === null && (
+                    )} */}
+                    {/* {mode === modes.RENAMING && (
                         <UploadOptionsCreate
                             onRequestClose={() => setMode(null)}
                         />
-                    )}
+                    )} */}
                 </BottomSheetView>
             </BottomSheet>
         </>
