@@ -26,13 +26,6 @@ export default function PlusOptions() {
             },
         },
         {
-            title: "file",
-            icon: "file-plus",
-            action: function (): void {
-                throw new Error("Function not implemented.");
-            },
-        },
-        {
             title: "upload",
             icon: "upload",
             action: async function (): Promise<void> {

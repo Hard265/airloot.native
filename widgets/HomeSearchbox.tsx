@@ -13,7 +13,7 @@ export default function HomeSearchbox() {
             placeholder="Search..."
             placeholderTextColor={colors.border}
             multiline={false}
-            className="h-12 flex-1 border-2 border-text/50 px-2 font-[NeueMontreal-Medium] color-text focus:border-primary/50"
+            className="h-12 flex-1 border-2 border-text/25 px-2 font-[NeueMontreal-Medium] color-text focus:border-primary"
         />
     );
 }
