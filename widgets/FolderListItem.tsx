@@ -1,6 +1,5 @@
 import ListItem from "@/components/ListItem";
 import useFolderOptions from "@/hooks/useFolderOptions";
-import useDirOptions from "@/hooks/useFolderOptions";
 import { HomeStackParamsList } from "@/Router";
 import { Dir } from "@/stores/dirStore";
 import { File } from "@/stores/fileStore";
@@ -20,9 +19,10 @@ import Animated, {
 
 interface FolderListItemProps {
     item: Dir | File;
+    onRename: (name: string) => void;
 }
 
-function FolderListItem({ item }: FolderListItemProps) {
+function FolderListItem({ item, onRename = noop }: FolderListItemProps) {
     const navigation =
         useNavigation<StackNavigationProp<HomeStackParamsList, "Folder">>();
     const { openBottomSheet } = useFolderOptions();
@@ -34,7 +34,7 @@ function FolderListItem({ item }: FolderListItemProps) {
     const renderIcon = (type: "file" | "folder") => {
         return rootStore.uiStore.selectionMode ? (
             isItemSelected ? (
-                <Feather name="minus-square" size={24} />
+                <Feather name="x-square" size={24} />
             ) : (
                 <Feather name="square" size={24} />
             )
@@ -55,7 +55,7 @@ function FolderListItem({ item }: FolderListItemProps) {
                 <ListItem
                     title={item.name}
                     editing={rootStore.uiStore.renaming === item.id}
-                    onSubmit={noop}
+                    onSubmit={(name) => onRename(name)}
                     onBlur={() => rootStore.uiStore.setRenameId(null)}
                     selected={isItemSelected}
                     subtitle={formatBytes(item.size, 2)}
@@ -73,7 +73,7 @@ function FolderListItem({ item }: FolderListItemProps) {
                     trailing={timestamp}
                     editing={rootStore.uiStore.renaming === item.id}
                     onBlur={() => rootStore.uiStore.setRenameId(null)}
-                    onSubmit={noop}
+                    onSubmit={(name) => onRename(name)}
                     selected={isItemSelected}
                     icon={renderIcon("folder")}
                     onLongPress={() => openBottomSheet(item)}

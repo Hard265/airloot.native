@@ -3,12 +3,10 @@ import { View, Text } from "react-native";
 
 const StorageCard = () => {
     return (
-        <View className="m-2 mb-4 flex flex-col gap-2 p-2">
-            <View className="flex-row items-center justify-between gap-2">
-                <Text className="font-[Roobert-Heavy] text-2xl text-text">
-                    Storage
-                </Text>
-                <Text className="font-[Roobert-Bold] text-xl text-text">
+        <View className="col m-2 mb-4 p-2">
+            <View className="row justify-between gap-2">
+                <Text className="h3">Storage</Text>
+                <Text className="font-[Roobert-Medium] text-lg text-text">
                     60%
                 </Text>
             </View>

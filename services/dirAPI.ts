@@ -14,6 +14,15 @@ export async function retrieveSubdirs(id: string | null): Promise<Dir[]> {
         .results;
 }
 
-export async function createDir(data: { name: string; parent_folder: string }) {
+export async function createDir(
+    data: Pick<Dir, "name" | "parent_folder">,
+): Promise<Dir> {
     return (await api.post(`/folders/`, data)).data;
+}
+
+export async function updateDir(
+    id: string,
+    data: Partial<Omit<Dir, "id">>,
+): Promise<Dir> {
+    return (await api.put(`/folders/${id}/`, data)).data;
 }

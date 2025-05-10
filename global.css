@@ -4,12 +4,24 @@
 @tailwind variants;
 
 @layer components {
-    .heading {
-        @apply font-[Roobert-Heavy] text-3xl color-text;
+    .h3 {
+        @apply font-[Roobert-SemiBold] text-xl color-text;
     }
 
-    .title {
-        @apply font-[Roobert-Heavy] text-2xl color-text;
+    .p {
+        @apply font-[NeueMontreal-Regular] text-base color-text;
+    }
+
+    .label {
+        @apply font-[NeueMontreal-Medium] text-lg color-text;
+    }
+
+    .btn-text {
+        @apply flex flex-row items-center justify-center gap-4 p-2.5;
+    }
+
+    .heading {
+        @apply font-[Roobert-Heavy] text-3xl color-text;
     }
 
     .subtitle {
@@ -21,5 +33,9 @@
     }
     .col {
         @apply flex flex-col gap-4;
+    }
+
+    .overlay-backdrop {
+        @apply flex-1 items-center justify-center bg-black/45 p-4;
     }
 }

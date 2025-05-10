@@ -1,6 +1,4 @@
 import { useBackHandler } from "@/hooks/useBackHandler";
-import { Dir } from "@/stores/dirStore";
-import { File } from "@/stores/fileStore";
 import FolderOptions from "@/widgets/FolderOptions";
 import BottomSheet, {
     BottomSheetBackdrop,
@@ -15,17 +13,13 @@ import {
     useRef,
     useState,
 } from "react";
+import type { FileSystemEntity, FolderOptionsContextType } from "../types";
 
-type FileSystemEntity = File | Dir;
-
-export const FolderOptionsContext = createContext<{
-    openBottomSheet: (item: FileSystemEntity) => void;
-    closeBottomSheet: () => void;
-    selectedItem: FileSystemEntity | null;
-}>({
+export const FolderOptionsContext = createContext<FolderOptionsContextType>({
     openBottomSheet: () => {},
     closeBottomSheet: () => {},
     selectedItem: null,
+    isBottomSheetVisible: false,
 });
 
 export default function FolderOptionsProvider({ children }: PropsWithChildren) {
@@ -73,6 +67,7 @@ export default function FolderOptionsProvider({ children }: PropsWithChildren) {
                 openBottomSheet,
                 closeBottomSheet,
                 selectedItem,
+                isBottomSheetVisible,
             }}
         >
             {children}

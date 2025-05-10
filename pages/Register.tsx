@@ -75,6 +75,7 @@ export default function Register() {
                 <Input
                     label="Email address"
                     value={formData.email}
+                    type="email-address"
                     onChange={(value) => handleChange("email", value)}
                     errors={errors.email}
                 />
@@ -86,6 +87,7 @@ export default function Register() {
                             onChange={(value) =>
                                 handleChange("password", value)
                             }
+                            secureTextEntry
                             errors={errors.password}
                         />
                     </View>
@@ -94,6 +96,7 @@ export default function Register() {
                             label="Confirm Password"
                             value={formData.password2}
                             errors={errors.password2}
+                            secureTextEntry
                             onChange={(value) =>
                                 handleChange("password2", value)
                             }

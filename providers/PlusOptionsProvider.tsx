@@ -68,6 +68,7 @@ export const PlusOptionsProvider = ({ children }: PropsWithChildren) => {
                 handleIndicatorStyle={{ backgroundColor: colors.text }}
                 onChange={handleBottomSheetVisibilityChange}
                 backdropComponent={renderBackdropComponent}
+                enablePanDownToClose
                 index={-1}
             >
                 <BottomSheetView>

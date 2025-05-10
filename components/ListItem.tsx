@@ -46,10 +46,14 @@ export default function ListItem(props: ListItemProps) {
                                 props.onSubmit && props.onSubmit(input)
                             }
                             onBlur={props.onBlur}
-                            className="border border-border p-2 py-1 font-[NeueMontreal-Regular] text-base color-text focus:border-2 focus:border-primary"
+                            className="border border-border p-2 py-1 font-[NeueMontreal-Regular] text-lg color-text focus:border-2 focus:border-primary"
                         />
                     ) : (
-                        <Text className="font-[NeueMontreal-Medium] text-lg color-text">
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="middle"
+                            className="font-[NeueMontreal-Medium] text-lg color-text"
+                        >
                             {props.title}
                         </Text>
                     )}

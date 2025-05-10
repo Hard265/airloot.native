@@ -1,4 +1,4 @@
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import clsx from "clsx";
 import { isEmpty, upperFirst } from "lodash";
 import { Text, TextInput, TextInputProps, View } from "react-native";
@@ -16,13 +16,7 @@ interface InputProps {
 export default function Input(props: InputProps) {
     return (
         <View className="flex flex-col gap-2 p-4">
-            <Text
-                className={clsx(
-                    "font-[NeueMontreal-Medium] text-lg color-text",
-                )}
-            >
-                {props.label}
-            </Text>
+            <Text className="label">{props.label}</Text>
             <TextInput
                 value={props.value}
                 onChangeText={props.onChange}
@@ -31,7 +25,7 @@ export default function Input(props: InputProps) {
                 secureTextEntry={props.secureTextEntry}
                 keyboardType={props.type}
                 className={clsx(
-                    "border-2 border-border/65 px-4 font-[NeueMontreal-Medium] text-base color-text focus:border-primary",
+                    "border-2 border-border/65 px-3 font-[NeueMontreal-Medium] text-base color-text focus:border-primary",
                     !isEmpty(props.errors) && "border-2 border-error",
                 )}
             />
@@ -44,7 +38,7 @@ export default function Input(props: InputProps) {
                                 size={18}
                             />
                         </Text>
-                        <Text className="flex-1 font-[NeueMontreal-Regular] text-error">
+                        <Text className="p flex-1 text-error">
                             {upperFirst(error)}
                         </Text>
                     </View>

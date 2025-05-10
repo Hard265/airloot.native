@@ -2,7 +2,6 @@ import Avatar from "@/components/Avatar";
 import rootStore from "@/stores/rootStore";
 import FolderHeaderRight from "@/widgets/FolderHeaderRight";
 import FolderListItem from "@/widgets/FolderListItem";
-import HomeSearchbox from "@/widgets/HomeSearchbox";
 import Pinned from "@/widgets/Pinned";
 import StorageCard from "@/widgets/StorageCard";
 import { useFocusEffect } from "@react-navigation/native";
@@ -12,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { HomeStackParamsList } from "../Router";
+import { trim } from "lodash";
 
 type props = StackScreenProps<HomeStackParamsList, "Home">;
 
@@ -44,16 +44,27 @@ function Home({ navigation }: props) {
                                 navigation.navigate("User", {});
                             }}
                         />
-                        <HomeSearchbox />
+                        {/* <HomeSearchbox /> */}
                     </View>
                 );
             },
             headerTitleContainerStyle: { flex: 1 },
             headerRight() {
-                return <FolderHeaderRight />;
+                return <FolderHeaderRight withSearch />;
             },
         });
     }, [navigation]);
+
+    async function handleRename(id: string, name: string): Promise<void> {
+        if (!trim(name)) return;
+
+        try {
+            await rootStore.dirStore.update(id, { name });
+        } catch (e) {
+            // TODO: Toast an error message
+            console.error(e);
+        }
+    }
 
     return (
         <>
@@ -69,14 +80,17 @@ function Home({ navigation }: props) {
                             <Pinned />
                         </View>
                         <View className="mx-4">
-                            <Text className="font-[Roobert-Heavy] text-2xl text-text">
-                                Folders and files
-                            </Text>
+                            <Text className="h3">Home</Text>
                         </View>
                     </>
                 }
                 itemLayoutAnimation={LinearTransition}
-                renderItem={({ item }) => <FolderListItem item={item} />}
+                renderItem={({ item }) => (
+                    <FolderListItem
+                        item={item}
+                        onRename={(name) => handleRename(item.id, name)}
+                    />
+                )}
                 keyExtractor={({ id }) => id}
             />
         </>

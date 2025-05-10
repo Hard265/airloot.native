@@ -1,9 +1,9 @@
 // External imports
-import { useFocusEffect, useTheme } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { trim } from "lodash";
-import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Text, TextInput, View } from "react-native";
+import { useCallback, useEffect } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 import Animated, {
     Extrapolation,
     interpolate,
@@ -65,6 +65,17 @@ function FolderScreen({ route, navigation }: props) {
         },
     });
 
+    async function handleRename(id: string, name: string): Promise<void> {
+        if (!trim(name)) return;
+
+        try {
+            await rootStore.dirStore.update(id, { name });
+        } catch (e) {
+            // TODO: Toast an error message
+            console.error(e);
+        }
+    }
+
     return (
         <>
             {/* {fetching && isEmpty(rootStore.dirStore.currentSubdirs) ? (
@@ -74,8 +85,12 @@ function FolderScreen({ route, navigation }: props) {
                 data={contents}
                 className="flex-1 bg-background"
                 onScroll={scrollHandler}
-                contentContainerClassName="pb-[1000]"
-                renderItem={({ item }) => <FolderListItem item={item} />}
+                renderItem={({ item }) => (
+                    <FolderListItem
+                        item={item}
+                        onRename={(name) => handleRename(item.id, name)}
+                    />
+                )}
                 // refreshControl={
                 //     <RefreshControl
                 //         refreshing={fetching}
@@ -124,41 +139,6 @@ function EmptyList() {
             <Text className="font-[NeueMontreal-Medium] text-lg color-text/80">
                 No content to display.
             </Text>
-        </View>
-    );
-}
-
-interface RenamingInputBoxProps {
-    name: string;
-    id: string;
-}
-
-function RenamingInputBox({ id, name }: RenamingInputBoxProps) {
-    const { colors } = useTheme();
-    const [input, setInput] = useState(name);
-
-    const handleSubmit = () => {
-        if (trim(input)) {
-            // rename.onRename(id, input);
-        }
-    };
-
-    const handleInputBlur = () => {
-        // rename.setId(null);
-    };
-    return (
-        <View className="flex-1">
-            <TextInput
-                value={input}
-                autoFocus
-                onChangeText={setInput}
-                selectTextOnFocus
-                onBlur={handleInputBlur}
-                onSubmitEditing={handleSubmit}
-                selectionColor={colors.primary}
-                selectionHandleColor={colors.primary}
-                className="flex-1 border border-primary p-2 py-1 font-[NeueMontreal-Medium] text-lg color-text"
-            />
         </View>
     );
 }

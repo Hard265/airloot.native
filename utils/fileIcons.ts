@@ -31,9 +31,9 @@ const fileIconMap: Record<
     default: "file",
 };
 
-export function getFileIcon(
+export function getFileIcon<T extends typeof MaterialCommunityIcons>(
     extension: string,
-): keyof typeof MaterialCommunityIcons.glyphMap {
+): keyof T["glyphMap"] {
     return fileIconMap[extension.toLowerCase()] || fileIconMap.default;
 }
 

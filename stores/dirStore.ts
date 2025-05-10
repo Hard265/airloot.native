@@ -1,4 +1,10 @@
-import { deleteDir, retrieveDir, retrieveSubdirs } from "@/services/dirAPI";
+import {
+    createDir,
+    deleteDir,
+    retrieveDir,
+    retrieveSubdirs,
+    updateDir,
+} from "@/services/dirAPI";
 import { defaultTo, filter, orderBy } from "lodash";
 import {
     action,
@@ -31,6 +37,7 @@ export class DirStore {
             currentDir: computed,
             currentSubdirs: computed,
             navigateTo: action,
+            create: action,
             retrive: action,
         });
         this.rootStore = rootStore;
@@ -53,6 +60,13 @@ export class DirStore {
         );
     }
 
+    async create(data: Pick<Dir, "name" | "parent_folder">) {
+        const dir = await createDir(data);
+        runInAction(() => {
+            this.dirs.set(dir.id, dir);
+        });
+    }
+
     async retrive(id: string) {
         const dir = await retrieveDir(id);
         runInAction(() => {
@@ -60,10 +74,18 @@ export class DirStore {
         });
     }
 
+    async update(id: string, updates: Partial<Omit<Dir, "id">>) {
+        const updated = await updateDir(id, updates);
+        runInAction(() => {
+            this.dirs.set(id, { ...(this.dirs.get(id) || {}), ...updated });
+        });
+    }
+
     async delete(id: string) {
         await deleteDir(id);
         runInAction(() => {
             this.dirs.delete(id);
+            // this.rootStore.fileStore.
         });
     }
 

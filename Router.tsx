@@ -7,8 +7,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 import useSession from "./hooks/useSession";
+import RootLayout from "./layouts/RootLayout";
 import FolderLayout from "./layouts/FolderLayout";
-import HomeLayout from "./layouts/HomeLayout";
 import Folder from "./pages/Folder";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -55,11 +55,7 @@ function HomeRouter() {
                 title: "",
                 animation: "slide_from_right",
             }}
-            layout={(props) => (
-                <HomeLayout>
-                    <FolderLayout {...props} />
-                </HomeLayout>
-            )}
+            layout={(props) => <FolderLayout {...props} />}
         >
             <HomeStack.Group>
                 <HomeStack.Screen name="Home" component={Home} />
@@ -93,6 +89,7 @@ function Router() {
                 screenOptions={{
                     animation: "slide_from_right",
                 }}
+                layout={(props) => <RootLayout {...props} />}
             >
                 {authenticated ? (
                     <RootStack.Screen
@@ -133,6 +130,7 @@ function getTheme(colorScheme: string | null | undefined) {
                   primary: colors.indigo[400],
                   card: colors.black,
                   notification: colors.zinc[800],
+                  background: colors.black,
               },
           }
         : {
@@ -141,6 +139,7 @@ function getTheme(colorScheme: string | null | undefined) {
                   ...DefaultTheme.colors,
                   primary: colors.indigo[500],
                   notification: colors.white,
+                  background: colors.white,
               },
           };
 }

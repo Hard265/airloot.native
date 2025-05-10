@@ -1,3 +1,5 @@
+import { AxiosProgressEvent } from "axios";
+import { omit, reduce } from "lodash";
 import {
     action,
     computed,
@@ -17,6 +19,8 @@ export enum TargetType {
     FOLDER = "folder",
 }
 
+type Progress = Omit<AxiosProgressEvent, "event">;
+
 export class UiStore {
     rootStore: RootStore;
     sorting: SORT = SORT.ASC;
@@ -29,6 +33,8 @@ export class UiStore {
     } | null = null;
     renaming: string | null = null;
 
+    uploadsPool: { [k: string]: Progress } = {};
+
     constructor(rootStore: RootStore) {
         makeObservable(this, {
             sorting: observable,
@@ -37,6 +43,10 @@ export class UiStore {
             selectionMode: observable,
             switchSort: action,
             toggleSelection: action,
+            uploadsPool: observable,
+            updateUploadsPool: action,
+            uploadProgress: computed,
+            destroyProgress: action,
             clearSelection: action,
             options: observable,
             getOptions: computed,
@@ -72,6 +82,27 @@ export class UiStore {
 
     setRenameId(id: string | null) {
         this.renaming = id;
+    }
+
+    get uploadProgress() {
+        const uploadsList = Object.values(this.uploadsPool);
+        return (
+            reduce(
+                uploadsList,
+                (total, n) => {
+                    return total + (n.progress || 0);
+                },
+                0,
+            ) / uploadsList.length || 0
+        );
+    }
+
+    updateUploadsPool(id: string, data: Progress) {
+        this.uploadsPool[id] = omit<Progress>(data, ["event"]) as Progress;
+    }
+
+    destroyProgress(id: string) {
+        delete this.uploadsPool[id];
     }
 
     get getOptions() {

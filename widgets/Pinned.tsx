@@ -1,5 +1,5 @@
 import { extractFileExtension, getFileIcon } from "@/utils/fileIcons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import { Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
@@ -10,9 +10,7 @@ export default function Pinned() {
     return (
         <View className="mb-4">
             <View className="flex flex-row items-center justify-between px-4">
-                <Text className="font-[Roobert-Heavy] text-2xl text-text">
-                    Pinned
-                </Text>
+                <Text className="h3">Pinned</Text>
             </View>
             <View className="flex flex-col">
                 {Array(2)
@@ -21,6 +19,7 @@ export default function Pinned() {
                         name: "hashes.txt",
                         size: 455670,
                     })
+
                     .map((i, index) => (
                         <RectButton key={index}>
                             <View className="flex flex-row items-center justify-start gap-4 p-2 px-4">
