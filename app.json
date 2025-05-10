@@ -22,7 +22,8 @@
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.hard_265.loot"
     },
     "web": {
       "favicon": "./assets/favicon.png"
