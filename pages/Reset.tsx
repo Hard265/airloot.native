@@ -4,10 +4,10 @@ import { get } from "lodash";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import Input from "../components/Input";
-import { StackScreenProps } from "@react-navigation/stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamsList } from "@/Router";
 
-type ScreenProps = StackScreenProps<RootStackParamsList, "Reset">;
+type ScreenProps = NativeStackScreenProps<RootStackParamsList, "Reset">;
 
 export default function Reset({ navigation }: ScreenProps) {
     const { resetPassword } = useSession();

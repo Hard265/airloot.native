@@ -5,7 +5,7 @@ import FolderListItem from "@/widgets/FolderListItem";
 import Pinned from "@/widgets/Pinned";
 import StorageCard from "@/widgets/StorageCard";
 import { useFocusEffect } from "@react-navigation/native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -13,7 +13,7 @@ import Animated, { LinearTransition } from "react-native-reanimated";
 import { HomeStackParamsList } from "../Router";
 import { trim } from "lodash";
 
-type props = StackScreenProps<HomeStackParamsList, "Home">;
+type props = NativeStackScreenProps<HomeStackParamsList, "Home">;
 
 function Home({ navigation }: props) {
     const [isLoading, setIsLoading] = useState(false);

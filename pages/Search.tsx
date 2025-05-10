@@ -1,11 +1,11 @@
 import { Heading } from "@/components/Text";
 import { HomeStackParamsList } from "@/Router";
 import { useTheme } from "@react-navigation/native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import { TextInput, View } from "react-native";
 
-type props = StackScreenProps<HomeStackParamsList, "Search">;
+type props = NativeStackScreenProps<HomeStackParamsList, "Search">;
 
 export default function Search({ navigation }: props) {
     const theme = useTheme();

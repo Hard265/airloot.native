@@ -7,7 +7,7 @@ import rootStore from "@/stores/rootStore";
 import { formatBytes } from "@/utils/intl";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import dayjs from "dayjs";
 import { noop } from "lodash";
 import { observer } from "mobx-react-lite";
@@ -24,7 +24,7 @@ interface FolderListItemProps {
 
 function FolderListItem({ item, onRename = noop }: FolderListItemProps) {
     const navigation =
-        useNavigation<StackNavigationProp<HomeStackParamsList, "Folder">>();
+        useNavigation<NativeStackNavigationProp<HomeStackParamsList, "Folder">>();
     const { openBottomSheet } = useFolderOptions();
 
     const timestamp = dayjs(item.created_at).format("MMM DD, YY");

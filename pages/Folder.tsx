@@ -1,6 +1,6 @@
 // External imports
 import { useFocusEffect } from "@react-navigation/native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { trim } from "lodash";
 import { useCallback, useEffect } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
@@ -21,7 +21,7 @@ import { observer } from "mobx-react-lite";
 import type { HomeStackParamsList } from "../Router";
 
 // Types
-type props = StackScreenProps<HomeStackParamsList, "Folder">;
+type props = NativeStackScreenProps<HomeStackParamsList, "Folder">;
 
 // Main component
 function FolderScreen({ route, navigation }: props) {

@@ -3,7 +3,7 @@ import {
     DefaultTheme,
     NavigationContainer,
 } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
 import colors from "tailwindcss/colors";
 import useSession from "./hooks/useSession";
@@ -43,8 +43,8 @@ export type HomeStackParamsList = {
     Settings: undefined;
 };
 
-const RootStack = createStackNavigator<RootStackParamsList>();
-const HomeStack = createStackNavigator<HomeStackParamsList>();
+const RootStack = createNativeStackNavigator<RootStackParamsList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamsList>();
 
 function HomeRouter() {
     return (

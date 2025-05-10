@@ -2,14 +2,14 @@ import useSession from "@/hooks/useSession";
 import { HomeStackParamsList } from "@/Router";
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import { StackScreenProps } from "@react-navigation/stack";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Crypto from "expo-crypto";
 import { memoize } from "lodash";
 import { observer } from "mobx-react-lite";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 
-type navigationProp = StackScreenProps<HomeStackParamsList, "User">;
+type navigationProp = NativeStackScreenProps<HomeStackParamsList, "User">;
 
 const getHash = memoize(async (email: string) => {
     const normalizedEmail = email.trim().toLowerCase();
