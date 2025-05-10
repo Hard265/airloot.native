@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "airloot",
-    "slug": "airloot",
-    "version": "1.0.0",
+    "name": "loot",
+    "slug": "loot",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,7 +19,10 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +36,12 @@
           "photosPermission": "The app accesses your photos to let you upload them to your loot storage."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "02cb3973-74e3-4ed9-94f3-7bcd6a9f5d44"
+      }
+    },
+    "owner": "hard_265"
   }
 }
