@@ -23,7 +23,7 @@ function App() {
     });
     if (!fontsLoaded || fontsError) return null;
     return (
-        <GestureHandlerRootView className="flex-1">
+        <GestureHandlerRootView style={{flex: 1}}>
             <Session>
                 <View className="flex-1 bg-background">
                     <Router />
