@@ -5,7 +5,16 @@
         "buildType": "apk"
       }
     },
-    "production": {}
+    "production": {
+      "releaseChannel": "production",
+      "developmentClient": false,
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": false
+      }
+    }
   },
   "cli": {
     "appVersionSource": "remote"

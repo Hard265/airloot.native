@@ -1,9 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import clsx from "clsx";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import {
-    Dimensions,
     StyleSheet,
     Text,
     TouchableWithoutFeedback,

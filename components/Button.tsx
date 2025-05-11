@@ -1,8 +1,7 @@
 import { useTheme } from "@react-navigation/native";
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { Text } from "react-native";
+import { ActivityIndicator, View , Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 
 interface ButtonProps extends PropsWithChildren {
